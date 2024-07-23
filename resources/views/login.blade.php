@@ -25,15 +25,6 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-md-6">
-
-                        @if(session('USER_LOGIN'))
-                            <h1>Welcome, {{ session('USER_NAME') }}</h1>
-                            <p>Your user ID is: {{ session('USER_ID') }}</p>
-                        @else
-                            <p>You are not logged in.</p>
-                        @endif
-
-
                         @if($errors->any())
                             @foreach($errors->all() as $error)
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">

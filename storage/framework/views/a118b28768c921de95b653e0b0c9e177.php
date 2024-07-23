@@ -25,15 +25,6 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-md-6">
-
-                        <?php if(session('USER_LOGIN')): ?>
-                            <h1>Welcome, <?php echo e(session('USER_NAME')); ?></h1>
-                            <p>Your user ID is: <?php echo e(session('USER_ID')); ?></p>
-                        <?php else: ?>
-                            <p>You are not logged in.</p>
-                        <?php endif; ?>
-
-
                         <?php if($errors->any()): ?>
                             <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">

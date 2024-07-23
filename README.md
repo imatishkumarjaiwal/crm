@@ -68,3 +68,18 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 >>>>>>> master
+
+
+## Custom Rules
+- Use Branch name format as >> DATE-TIME >> AM-21071217 >> AM - initial , 21 - Date, 07 - Month, 12 - Time in hours, 17 - Time in mins
+- use "php artisan serve" to start the project
+- use "php artisan make:model Users -mcr" for model view & controller & DB migration file also 
+- use Camel Case as the naming convention
+- use "php artisan migrate:refresh --path=/database/migrations/2024_07_19_034724_create_users_table.php" for perticular DB file migration
+- use "php artisan view:clear" for clearing chache for view
+- use "php artisan route:clear" for clearing chache for route
+- use "php artisan make:middleware AdminMiddleware" for makeing middleware
+- use "https://boxicons.com/?query=" for icons
+- use "mpdf/mpdf": "^8.0" in compose.json & hit composer update
+- use "php artisan storage:link" for storage link >> storage/app/public -> public/storage (storage/media/)
+- use this for call seeder 'php artisan db:seed --class=UsersTableSeeder' only perticular for all 'php artisan db:seed'
