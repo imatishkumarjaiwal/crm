@@ -11,13 +11,7 @@ use Illuminate\Support\Facades\Session;
 class UsersController extends Controller
 {
     public function signIn(){
-
-        if(session('USER_LOGIN')){
-            return redirect('/dashboard');
-        }else{
-            return view('login');
-        }
-
+        return view('login');
     }
 
     public function signUp(){
@@ -49,6 +43,10 @@ class UsersController extends Controller
         return view('admin.dashboard');
     }
 
+    public function blankPage()
+    {
+        return view('admin.blankPage');
+    }
 
     /**
      * Display a listing of the resource.
