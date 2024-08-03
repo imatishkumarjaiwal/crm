@@ -83,3 +83,5 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - use "mpdf/mpdf": "^8.0" in compose.json & hit composer update
 - use "php artisan storage:link" for storage link >> storage/app/public -> public/storage (storage/media/)
 - use this for call seeder 'php artisan db:seed --class=UsersTableSeeder' only perticular for all 'php artisan db:seed'
+- use 'composer require yajra/laravel-datatables-oracle' for datatable after that use 'php artisan vendor:publish  --provider="Yajra\DataTables\DataTablesServiceProvider"'
+- For helpers >> create function in helper.php then use like this >> <a class="nav-link" href="#">{{ getUserName(session('USER_ID')) }}</a>
