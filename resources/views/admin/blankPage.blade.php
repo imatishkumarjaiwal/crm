@@ -1,25 +1,22 @@
 @extends('admin.layout')
 @section('page-title', 'Blank Page')
 @section('page-content')
-<!-- start page title -->
-<div class="row">
-    <div class="col-12">
-        <div class="page-title-box d-sm-flex align-items-center justify-content-between card flex-sm-row border-0">
-            <h4 class="mb-sm-0 font-size-16 fw-semibold">Blank Page</h4>
 
-            <div class="page-title-right">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Blank Page</a></li>
-                    <li class="breadcrumb-item active">Blank Page</li>
-                </ol>
-            </div>
-
-        </div>
+<div class="form-head d-flex mb-sm-4 mb-3">
+    <div class="me-auto">
+        <h2 class="text-black font-w600">Blank Page</h2>
+        <p class="mb-0">View / Add / Update / Blank Page</p>
+    </div>
+    <div>
+        <a href="javascript:void(0)" class="btn btn-danger me-2 disabled" id="delete_button" data-bs-toggle="modal"
+            data-bs-target=".bd-example-modal-lg"><i class="bx bx-trash"></i> Delete</a>
+        <a href="#" class="btn btn-primary me-3"><i class='bx bx-plus-circle' ></i> New
+            Blank Page</a>
     </div>
 </div>
-<!-- end page title -->
+
 
 <div class="row">
-    <h1>Blank Page</h1>
+    <h1>YOUR DATA HERE</h1>
 </div> <!-- end row-->
 @endsection
