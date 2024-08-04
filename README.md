@@ -71,7 +71,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 
 ## Custom Rules
-- Use Branch name format as >> DATE-TIME >> AM-21071217 >> AM - initial , 21 - Date, 07 - Month, 12 - Time in hours, 17 - Time in mins
+- Use Branch name format as >> DATE-TIME >> AM-21071217 >> AM - initial , 21 - Date, 07 - Month, 24 - Year, 12 - Time in hours, 17 - Time in mins
 - use "php artisan serve" to start the project
 - use "php artisan make:model Users -mcr" for model view & controller & DB migration file also 
 - use Camel Case as the naming convention

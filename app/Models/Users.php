@@ -16,6 +16,7 @@ class Users extends Model
         'created_on',
         'updated_by',
         'updated_on',
+        'deleted_status'
     ];
 
     public $timestamps = false;

@@ -28,5 +28,6 @@ Route::middleware('admin')->group(function () {
         Route::get('/get-staffs', 'getStaffs')->name('admin.staff.getStaffs');
         Route::post('/save-staff', 'saveStaff')->name('admin.staff.saveStaff');
         Route::get('/edit-staff/{id}', 'getStaffDataForEdit')->name('admin.staff.getStaffDataForEdit');
+        Route::post('/delete-staff', 'deleteStaff')->name('admin.staff.deleteStaff');
     });
 });

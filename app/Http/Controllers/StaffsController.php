@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Staffs;
 use App\Models\Users;
-use Dotenv\Validator;
-use Illuminate\Contracts\Validation\Validator as ValidationValidator;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -18,22 +17,25 @@ class StaffsController extends Controller
     public function getStaffs(Request $request)
     {
         if ($request->ajax()) {
-            if ($request->ajax()) {
-                $data = Staffs::select(['id', 'first_name', 'last_name', 'email', 'mobile_number']);
-                return DataTables::of($data)
-                    ->addColumn('action', function($row){
-                        $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm" data-id="'.$row->id.'"><i class="bx bx-edit-alt"></i></a>';
-                        $btn .= '&nbsp; <a href="javascript:void(0)" class="delete btn btn-danger btn-sm"><i class="bx bx-trash"></i></a>';
-                        return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-            }
+            $data = Staffs::select(['id', 'first_name', 'last_name', 'email', 'mobile_number', 'updated_on'])
+                ->where('deleted_status', 0)
+                ->orderBy('updated_on', 'DESC');
+
+            return DataTables::of($data)
+                ->addColumn('updated_on', function ($row) {
+                    return Carbon::parse($row->updated_on)->format('d-m-Y H:i:s'); // Format as per your requirement
+                })
+                ->addColumn('action', function ($row) {
+                    $action = '<input class="form-check-input select_checkbox" type="checkbox" data-id="' . $row->id . '"> &nbsp; ';
+                    $action .= '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm" data-id="' . $row->id . '"><i class="bx bx-edit-alt"></i></a>';
+                    $action .= '&nbsp; <a href="javascript:void(0)" class="btn btn-danger btn-sm single_delete_button" onClick="open_delete_modal(\'single\')" data-id="' . $row->id . '"><i class="bx bx-trash"></i></a>';
+                    return $action;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
         }
     }
-    /**
-     * Display a listing of the resource.
-     */
+
     public function staffIndex()
     {
         return view('admin.staffIndex');
@@ -46,10 +48,8 @@ class StaffsController extends Controller
 
     public function saveStaff(Request $request)
     {
-        // Check if staff_id is present in the request
         $isUpdate = $request->has('staff_id') && !empty($request->staff_id);
 
-        // Define validation rules
         $rules = [
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
@@ -59,84 +59,87 @@ class StaffsController extends Controller
                 'digits:10',
                 $isUpdate ? 'unique:staffs,mobile_number,' . $request->staff_id : 'unique:staffs,mobile_number'
             ],
-            'email' => [
-                'required',
-                'email',
-                $isUpdate ? 'unique:staffs,email,' . $request->staff_id : 'unique:staffs,email'
-            ],
-            'password' => 'required|string|min:8',
+            'email' => 'required|string|max:255',
         ];
-    
+
         $validator = FacadesValidator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-    
-        $staff = Staffs::updateOrCreate([
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'last_name' => $request->last_name,
-            'mobile_number' => $request->mobile_number,
-            'email' => $request->email,
-            'address' => $request->address,
-            'created_by' => $request->session()->get('USER_ID'),
-            'created_on' => now(),
-            'updated_by' => $request->session()->get('USER_ID'),
-            'updated_on' => now(),
-        ]);
-    
-        // Create or update the user record associated with the staff
-        $user = Users::updateOrCreate([
-            'username' => $staff->mobile_number,
-            'password' => Hash::make($request->password),
-            'staff_id' => $staff->id,
-            'created_by' => $request->session()->get('USER_ID'),
-            'created_on' => now(),
-            'updated_by' => $request->session()->get('USER_ID'),
-            'updated_on' => now(),
-        ]);
-    
-        return response()->json(['message' => 'Staff saved successfully!']);
+
+        try {
+            $staff = Staffs::updateOrCreate(
+                ['id' => $request->staff_id],
+                [
+                    'first_name' => $request->first_name,
+                    'middle_name' => $request->middle_name,
+                    'last_name' => $request->last_name,
+                    'mobile_number' => $request->mobile_number,
+                    'email' => $request->email,
+                    'address' => $request->address,
+                    'updated_by' => $request->session()->get('USER_ID'),
+                    'updated_on' => now()
+                ]
+            );
+
+            if (!$isUpdate) {
+                $staff->created_by = $request->session()->get('USER_ID');
+                $staff->created_on = now();
+                $staff->save();
+            }
+
+            $user = Users::updateOrCreate(
+                ['staff_id' => $staff->id],
+                [
+                    'username' => $staff->mobile_number,
+                    'password' => Hash::make($request->first_name . '@123'),
+                    'updated_by' => $request->session()->get('USER_ID'),
+                    'updated_on' => now(),
+                ]
+            );
+
+            if (!$isUpdate) {
+                $user->created_by = $request->session()->get('USER_ID');
+                $user->created_on = now();
+                $user->save();
+            }
+
+            $message = $isUpdate ? 'Staff member ' . $staff->first_name . ' ' . $staff->last_name . ' has been updated successfully!' : 'Staff member ' . $staff->first_name . ' ' . $staff->last_name . ' has been created successfully!';
+
+            return response()->json(['message' => $message]);
+
+        } catch (\Exception $e) {
+            Log::error('Error saving staff record: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while saving the staff. Please try again later.']);
+        }
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteStaff(Request $request)
     {
-        //
+        try {
+            $ids = explode(',', $request->input('ids'));
+
+            foreach ($ids as $id) {
+                $staff = Staffs::findOrFail($id);
+                $staff->update(['deleted_status' => 1]);
+
+                $user = Users::where('staff_id', $staff->id)->first();
+                if ($user) {
+                    $user->update(['deleted_status' => 1]);
+                }
+            }
+
+            return response()->json([
+                'message' => count($ids) > 1 
+                    ? 'Selected staff members have been deleted successfully!' 
+                    : 'Staff member ' . $staff->first_name . ' ' . $staff->last_name . ' has been deleted successfully!'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error deleting staff record: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while marking the staff and user records as deleted.']);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Staffs $staffs)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Staffs $staffs)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Staffs $staffs)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Staffs $staffs)
-    {
-        //
-    }
 }
