@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -19,6 +20,10 @@ class AdminMiddleware
         if (!Session::get('USER_LOGIN')) {
             return redirect('/')->with('error', 'You must be logged in to access this page.');
         }
+
+        // $userId = Session::get('USER_ID');
+        // $user = User::find($userId);
+            
         return $next($request);
     }
 }

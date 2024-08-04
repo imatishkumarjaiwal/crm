@@ -9,14 +9,22 @@
         <meta content="Pichforest" name="author" />
         <!-- App favicon -->
         {{-- <link rel="shortcut icon" href="assets/images/favicon.ico"> --}}
+        
+        <!-- DataTables -->
+        <link href="assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+        <!-- Select datatable -->
+        <link href="assets/libs/datatables.net-select-bs4/css/select.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+        <!-- Responsive datatable -->
+        <link href="assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />     
 
         <!-- Bootstrap Css -->
         <link href="assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="assets/css/toastr.min.css">
         <!-- Icons Css -->
         <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
         <!-- App Css-->
         <link href="assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
-
     </head>
 
     <body data-topbar="dark" data-layout="horizontal">
@@ -85,7 +93,7 @@
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-1.jpg"
                                     alt="Header Avatar">
-                                <span class="d-none d-xl-inline-block ms-1">Peter</span>
+                                <span class="d-none d-xl-inline-block ms-1">{{ getUserName(session('USER_ID')) }}</span>
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
@@ -111,26 +119,20 @@
 
                         <div class="collapse navbar-collapse" id="topnav-menu-content">
                             <ul class="navbar-nav">
-
-                                {{-- <li class="nav-item">
-                                    <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-dahboard" role="button">
-                                        <i class=""></i><span key="t-dashboards"></span> <div class="arrow-down"></div>
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="topnav-dahboard">
-
-                                        <a href="index.html" class="dropdown-item" key="t-dashboards">Dashboard</a>
-                                        <a href="dashboard-crypto.html" class="dropdown-item" key="t-crypto">Crypto</a>
-                                    </div>
-                                </li> --}}
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.dashboard') }}">
                                         <i class="bx bxs-dashboard me-2"></i><span key="t-ui-elements">Dashboard</span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.blankPage') }}">
-                                        <i class="bx bx-file-blank me-2"></i><span key="t-ui-elements">Blank Page</span>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-advancedkit" role="button">
+                                        <i class="bx bxs-grid me-2"></i> Masters <div class="arrow-down"></div>
                                     </a>
+                                    <div class="dropdown-menu" aria-labelledby="topnav-advancedkit">
+                                        <a href="{{ route('admin.staff.index') }}" class="dropdown-item">Staff</a>
+                                        <a href="advanced-rangeslider.html" class="dropdown-item">Client</a>
+                                        <a href="{{  route('admin.blankPage') }}" class="dropdown-item">Blank Page</a>
+                                    </div>
                                 </li>
                                 {{-- <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-advancedkit" role="button">
@@ -431,13 +433,48 @@
         <script src="assets/libs/simplebar/simplebar.min.js"></script>
         <script src="assets/libs/node-waves/waves.min.js"></script>
 
-        <!-- apexcharts -->
-        <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
+        <!-- Required datatable js -->
+        <script src="assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+        <script src="assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
 
-        <!-- dashboard init -->
-        <script src="assets/js/pages/dashboard.init.js"></script>
+        <!-- Buttons examples -->
+        <script src="assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+        <script src="assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+        <script src="assets/libs/jszip/jszip.min.js"></script>
+        <script src="assets/libs/pdfmake/build/pdfmake.min.js"></script>
+        <script src="assets/libs/pdfmake/build/vfs_fonts.js"></script>
+        {{-- <script src="assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+        <script src="assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+        <script src="assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+        <script src="assets/libs/datatables.net-keyTable/js/dataTables.keyTable.min.html"></script>
+        <script src="assets/libs/datatables.net-select/js/dataTables.select.min.js"></script> --}}
+        
+        <!-- Responsive examples -->
+        {{-- <script src="assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+        <script src="assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script> --}}
 
-        <!-- App js -->
+        <!-- Datatable init js -->
+        {{-- <script src="assets/js/pages/datatables.init.js"></script> --}}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
         <script src="assets/js/app.js"></script>
+        <script>
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "3000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+        </script>
+        @section('footer')
+        @show
     </body>
 </html>
