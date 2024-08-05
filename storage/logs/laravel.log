@@ -5711,3 +5711,7 @@ Stack trace:
 #59 C:\\xampp\\htdocs\\crm\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(23): require_once('C:\\\\xampp\\\\htdocs...')
 #60 {main}
 "} 
+[2024-08-05 03:23:11] local.ERROR: Error saving staff record: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'atishjaiwal48@gmail.com' for key 'staffs_email_unique' (Connection: mysql, SQL: insert into `staffs` (`first_name`, `middle_name`, `last_name`, `mobile_number`, `email`, `address`, `updated_by`, `updated_on`) values (Shivam, Vijay, Kharat, 9856447711, atishjaiwal48@gmail.com, N-12, ED-22/5, Bharatmata Nagar
+HUDCO, Aurangabad, 1, 2024-08-05 03:23:11))  
+[2024-08-05 03:25:16] local.ERROR: Error saving staff record: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'atishjaiwal@gmail.com' for key 'staffs_email_unique' (Connection: mysql, SQL: insert into `staffs` (`first_name`, `middle_name`, `last_name`, `mobile_number`, `email`, `address`, `updated_by`, `updated_on`) values (Atishkumar, ?, Jaiwal, 9568663350, atishjaiwal@gmail.com, N-12, ED-22/5, Bharatmata Nagar
+HUDCO, Aurangabad, 1, 2024-08-05 03:25:16))  
