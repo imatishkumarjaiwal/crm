@@ -23,12 +23,11 @@ class StaffsController extends Controller
 
             return DataTables::of($data)
                 ->addColumn('updated_on', function ($row) {
-                    return Carbon::parse($row->updated_on)->format('d-m-Y H:i:s'); // Format as per your requirement
+                    return Carbon::parse($row->updated_on)->format('d-m-Y h:i A');
                 })
                 ->addColumn('action', function ($row) {
                     $action = '<input class="form-check-input select_checkbox" type="checkbox" data-id="' . $row->id . '"> &nbsp; ';
                     $action .= '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm" data-id="' . $row->id . '"><i class="bx bx-edit-alt"></i></a>';
-                    $action .= '&nbsp; <a href="javascript:void(0)" class="btn btn-danger btn-sm single_delete_button" onClick="open_delete_modal(\'single\')" data-id="' . $row->id . '"><i class="bx bx-trash"></i></a>';
                     return $action;
                 })
                 ->rawColumns(['action'])
@@ -57,9 +56,15 @@ class StaffsController extends Controller
             'mobile_number' => [
                 'required',
                 'digits:10',
-                $isUpdate ? 'unique:staffs,mobile_number,' . $request->staff_id : 'unique:staffs,mobile_number'
+                $isUpdate ? 'unique:staffs,mobile_number,' . $request->staff_id : 'unique:staffs,mobile_number',
             ],
-            'email' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                $isUpdate ? 'unique:staffs,email,' . $request->staff_id : 'unique:staffs,email',
+            ],
         ];
 
         $validator = FacadesValidator::make($request->all(), $rules);
@@ -120,7 +125,6 @@ class StaffsController extends Controller
     {
         try {
             $ids = explode(',', $request->input('ids'));
-
             foreach ($ids as $id) {
                 $staff = Staffs::findOrFail($id);
                 $staff->update(['deleted_status' => 1]);
@@ -132,9 +136,7 @@ class StaffsController extends Controller
             }
 
             return response()->json([
-                'message' => count($ids) > 1 
-                    ? 'Selected staff members have been deleted successfully!' 
-                    : 'Staff member ' . $staff->first_name . ' ' . $staff->last_name . ' has been deleted successfully!'
+                'message' => 'Selected staff members have been deleted successfully!'
             ]);
         } catch (\Exception $e) {
             Log::error('Error deleting staff record: ' . $e->getMessage());
