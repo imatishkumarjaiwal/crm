@@ -71,7 +71,7 @@
         <p class="mb-0">View / Add / Update / Delete Staffs </p>
     </div>
     <div>
-        <a href="javascript:void(0)" class="btn btn-danger me-2 disabled" id="delete_button" onClick="open_delete_modal('multiple')"><i class="bx bx-trash"></i> Delete</a>
+        <a href="javascript:void(0)" class="btn btn-danger me-2 disabled" id="delete_button" onClick="open_delete_modal()"><i class="bx bx-trash"></i> Delete</a>
         <a href="#" class="btn btn-primary me-3" id="openModal"><i class='bx bx-plus-circle' ></i> New
             Staff</a>
     </div>
@@ -84,7 +84,7 @@
                 <table class="table table-bordered" id="datatable">
                     <thead>
                         <tr>
-                            <th>Action</th>
+                            <th><input class="form-check-input select_checkbox_all" type="checkbox"> &nbsp; Action</th>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
@@ -119,17 +119,17 @@ var table = $('#datatable').DataTable({
 });
 
 function clearForm(formId) {
-    $('#' + formId)[0].reset();
-    $('#' + formId).find('.is-invalid').removeClass('is-invalid');
-    $('#' + formId).find('.is-valid').removeClass('is-valid');
-    $('#' + formId).find('.invalid-feedback').remove();
-    $('.save_data').prop('disabled', false);
+    var form = $('#' + formId);
+    form[0].reset();
+    form.find('.is-invalid').removeClass('is-invalid');
+    form.find('.is-valid').removeClass('is-valid');
+    form.find('.invalid-feedback').remove();
+    form.find('input[type="hidden"]').val('');
 }
 
 $('#openModal').on('click', function (event) {
-    const id = 'add_update_modal';
     clearForm('add_update_form');
-    $('#'+id).modal('show');
+    $('#add_update_modal').modal('show');
 });
 
 function validateField(field, message) {
@@ -175,7 +175,6 @@ $('#datatable').on('click', '.edit', function() {
 $("#add_update_form").submit(function(event) {
     event.preventDefault();
     const formData = new FormData(this);
-    $('.save_data').prop('disabled', true);
     $.ajax({
         url: "{{ route('admin.staff.saveStaff') }}",
         type: 'POST',
@@ -215,20 +214,10 @@ $('#add_update_form .form-control').on('input', function() {
     }
 });
 
-function open_delete_modal(isMultiple) {
+function open_delete_modal() {
     $('.delete_modal').modal('show');
-    var message = '';
-    var delete_ids;
-    if (isMultiple == 'multiple') {
-        delete_ids = delete_selected_id_array;
-        message = 'Are you sure you want to delete the selected records? This action cannot be undone.';
-    } else {
-        delete_ids = event.currentTarget.getAttribute('data-id');
-        message = 'Are you sure you want to delete this record? This action cannot be undone.';
-    }
-
-    $('.delete_modal_text').empty().text(message);
-    $('#delete_ids').empty().val(delete_ids);
+    $('.delete_modal_text').empty().text('Are you sure you want to delete the selected records ? This action cannot be undone.');
+    $('#delete_ids').empty().val(delete_selected_id_array);
 }
 
 $(document).on('click', '.delete_records', function () {
@@ -263,6 +252,7 @@ $(document).on('click', '.delete_records', function () {
 $(document).on('click', '.select_checkbox', function () {
     var $checkbox = $(this);
     var id = $checkbox.data('id');
+    var rowCount = table.rows().count();
     if ($checkbox.is(':checked')) {
         if (!delete_selected_id_array.includes(id)) {
             delete_selected_id_array.push(id);
@@ -281,24 +271,23 @@ $(document).on('click', '.select_checkbox', function () {
             $('.single_delete_button').removeClass('disabled');
         }
     }
+    $('.select_checkbox_all').prop('checked', rowCount === delete_selected_id_array.length);
 });
 
-function select_all_records_for_delete(e) {
-    if ($(e).is(':checked')) {
-        $('.select_checkbox').each(function() {
-            this.checked = true;
-            delete_selected_id_array.push($(this).attr('id'));
+$('.select_checkbox_all').on('click', function () {
+    var isChecked = $(this).is(':checked');
+    var selectedCheckboxes = $('.select_checkbox');
+    selectedCheckboxes.each(function() {
+        this.checked = isChecked;
+        var id = $(this).data('id');
+        if (isChecked) {
+            delete_selected_id_array.push(id);
             $(this).parents('tr').css('background-color', '#ffc7c7');
-            $('#delete_button').removeClass('disabled');
-        });
-    } else {
-        $('.select_checkbox').each(function() {
-            this.checked = false;
-            delete_selected_id_array = [];
+        } else {
             $(this).parents('tr').css('background-color', 'initial');
-            $('#delete_button').addClass('disabled');
-        });
-    }
-}
+        }
+    });
+    $('#delete_button').toggleClass('disabled', !isChecked);
+});
 </script>
 @endsection
