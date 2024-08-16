@@ -24,9 +24,12 @@ Route::middleware('admin')->group(function () {
         Route::get('/blank-page', 'blankPage')->name('admin.blankPage');
     });
     Route::controller(StaffsController::class)->group(function () {
-        Route::get('/staffs', 'staffIndex')->name('admin.staff.index');
+        Route::get('/staffs', 'index')->name('admin.staff.index');
+        Route::get('/staffs/add', 'manageStaff')->name('admin.staff.add');
+        Route::post('/staff/insert', 'insertStaff')->name('admin.staff.insert');
+        Route::get('/staffs/edit/{id}', 'manageStaff')->name('admin.staff.edit');
+        Route::post('/staff/update', 'updateStaff')->name('admin.staff.update');
         Route::get('/get-staffs', 'getStaffs')->name('admin.staff.getStaffs');
-        Route::post('/save-staff', 'saveStaff')->name('admin.staff.saveStaff');
         Route::get('/edit-staff/{id}', 'getStaffDataForEdit')->name('admin.staff.getStaffDataForEdit');
         Route::post('/delete-staff', 'deleteStaff')->name('admin.staff.deleteStaff');
     });

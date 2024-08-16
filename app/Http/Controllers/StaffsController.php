@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\References;
 use App\Models\Staffs;
 use App\Models\Users;
 use Carbon\Carbon;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
@@ -13,6 +16,31 @@ use Yajra\DataTables\Facades\DataTables;
 
 class StaffsController extends Controller
 {
+
+    public function index()
+    {
+        return view('admin.staffs');
+    }
+
+    public function manageStaff($staffId = '')
+    {
+        $staff = null;
+        $references = [];
+
+        if (!empty($staffId)) {
+            $staff = Staffs::find($staffId);
+
+            if (!$staff) {
+                return redirect()->route('admin.staff.index')->withErrors(['error' => 'Staff member not found.']);
+            }
+
+            $references = References::where('staff_id', $staffId)->get();
+        }
+
+        return view('admin.manageStaff', compact('staff', 'references'));
+    }
+
+    
 
     public function getStaffs(Request $request)
     {
@@ -26,8 +54,9 @@ class StaffsController extends Controller
                     return Carbon::parse($row->updated_on)->format('d-m-Y h:i A');
                 })
                 ->addColumn('action', function ($row) {
+                    $editUrl = route('admin.staff.edit', $row->id);
                     $action = '<input class="form-check-input select_checkbox" type="checkbox" data-id="' . $row->id . '"> &nbsp; ';
-                    $action .= '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm" data-id="' . $row->id . '"><i class="bx bx-edit-alt"></i></a>';
+                    $action .= '<a href="' . $editUrl . '" class="btn btn-primary btn-sm"><i class="bx bx-edit-alt"></i></a>';
                     return $action;
                 })
                 ->rawColumns(['action'])
@@ -35,90 +64,177 @@ class StaffsController extends Controller
         }
     }
 
-    public function staffIndex()
-    {
-        return view('admin.staffIndex');
-    }
-
     public function getStaffDataForEdit($staffId) {
         $staff = Staffs::find($staffId);
         return $staff ? response()->json(['status' => 'success', 'data' => $staff], 200) : response()->json(['status' => 'error', 'message' => 'Staff member not found.'], 404);
     }
 
-    public function saveStaff(Request $request)
+    public function insertStaff(Request $request)
     {
-        $isUpdate = $request->has('staff_id') && !empty($request->staff_id);
+        try {
 
+            $validator = $this->validateStaff($request);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $photoPath = $this->handleFileUpload($request, 'photo', 'photos');
+            $aadharFilePath = $this->handleFileUpload($request, 'aadhar_file', 'aadhar_files');
+            $panFilePath = $this->handleFileUpload($request, 'pan_file', 'pan_files');
+
+            $staff = new Staffs();
+            $staff->fill($request->all());
+            $staff->photo = $photoPath;
+            $staff->aadhar_file = $aadharFilePath;
+            $staff->pan_file = $panFilePath;
+            $staff->created_by = $request->session()->get('USER_ID');
+            $staff->created_on = now();
+            $staff->save();
+
+            $this->createUser($staff, $request);
+
+            $this->saveReferences($staff->id, $request->references, $request);
+
+            return response()->json(['status' => 'success', 'message' => 'Staff member created successfully!']);
+
+        } catch (\Exception $e) {
+            Log::error('Error inserting staff record: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while saving the staff. Please try again later.'], 500);
+        }
+    }
+
+    public function updateStaff(Request $request)
+    {
+        try {
+            $validator = $this->validateStaff($request, $request->staff_id);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $staff = Staffs::findOrFail($request->staff_id);
+            $staff->fill($request->all());
+            $staff->mobile_number = $request->mobile_number;
+            $staff->email = $request->email;
+            if ($request->hasFile('photo')) {
+                $staff->photo = $this->handleFileUpload($request, 'photo', 'photos');
+            }
+            if ($request->hasFile('aadhar_file')) {
+                $staff->aadhar_file = $this->handleFileUpload($request, 'aadhar_file', 'aadhar_files');
+            }
+            if ($request->hasFile('pan_file')) {
+                $staff->pan_file = $this->handleFileUpload($request, 'pan_file', 'pan_files');
+            }
+            $staff->updated_by = $request->session()->get('USER_ID');
+            $staff->updated_on = now();
+            $staff->save();
+
+            $this->updateUser($staff, $request);
+
+            if ($request->has('reference_delete_ids')) {
+                $deleteIds = explode(',', $request->reference_delete_ids);
+                if (!empty($deleteIds)) {
+                    $deleted = References::whereIn('id', $deleteIds)->delete();
+                }
+            }
+
+            if ($request->has('references')) {
+                $this->saveReferences($staff->id, $request->references, $request, true);
+            }
+
+            return response()->json(['status' => 'success', 'message' => 'Staff member updated successfully!']);
+
+        } catch (\Exception $e) {
+            Log::error('Error updating staff record: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while updating the staff. Please try again later.'], 500);
+        }
+    }
+
+
+    private function validateStaff(Request $request, $staffId = null)
+    {
         $rules = [
             'first_name' => 'required|string|max:255',
-            'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
             'mobile_number' => [
                 'required',
                 'digits:10',
-                $isUpdate ? 'unique:staffs,mobile_number,' . $request->staff_id : 'unique:staffs,mobile_number',
+                $staffId ? 'unique:staffs,mobile_number,' . $staffId : 'unique:staffs,mobile_number',
             ],
             'email' => [
                 'required',
-                'string',
                 'email',
                 'max:255',
-                $isUpdate ? 'unique:staffs,email,' . $request->staff_id : 'unique:staffs,email',
+                $staffId ? 'unique:staffs,email,' . $staffId : 'unique:staffs,email',
             ],
+            'references.*.name' => 'required|string|max:255',
+            'references.*.relationship' => 'required|string|max:255',
+            'references.*.mobile' => 'required|digits:10',
         ];
 
-        $validator = FacadesValidator::make($request->all(), $rules);
+        return FacadesValidator::make($request->all(), $rules);
+    }
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+    private function handleFileUpload(Request $request, $fieldName, $directory)
+    {
+        if ($request->hasFile($fieldName)) {
+            $uniqueId = time() . '_' . uniqid();
+            return $request->file($fieldName)->storeAs($directory, $uniqueId . '_' . $request->file($fieldName)->getClientOriginalName(), 'public');
         }
+        return null;
+    }
 
-        try {
-            $staff = Staffs::updateOrCreate(
-                ['id' => $request->staff_id],
-                [
-                    'first_name' => $request->first_name,
-                    'middle_name' => $request->middle_name,
-                    'last_name' => $request->last_name,
-                    'mobile_number' => $request->mobile_number,
-                    'email' => $request->email,
-                    'address' => $request->address,
-                    'updated_by' => $request->session()->get('USER_ID'),
-                    'updated_on' => now()
-                ]
-            );
+    private function createUser(Staffs $staff, Request $request)
+    {
+        $user = new Users();
+        $user->staff_id = $staff->id;
+        $user->username = $staff->mobile_number;
+        $user->password = Hash::make($request->first_name . '@123');
+        $user->created_by = $request->session()->get('USER_ID');
+        $user->created_on = now();
+        $user->save();
+    }
 
-            if (!$isUpdate) {
-                $staff->created_by = $request->session()->get('USER_ID');
-                $staff->created_on = now();
-                $staff->save();
+    private function updateUser(Staffs $staff, Request $request)
+    {
+        $user = Users::where('staff_id', $staff->id)->firstOrFail();
+        $user->username = $staff->mobile_number;
+        $user->password = Hash::make($request->first_name . '@123');
+        $user->updated_by = $request->session()->get('USER_ID');
+        $user->updated_on = now();
+        $user->save();
+    }
+
+   private function saveReferences($staffId, $references, Request $request, $isUpdate = false)
+    {   
+        foreach ($references as $reference) {
+            if (isset($reference['reference_id'])) {
+                $existingReference = References::find($reference['reference_id']);
+                $existingReference->staff_id = $staffId;
+                $existingReference->name = $reference['name'];
+                $existingReference->relationship = $reference['relationship'];
+                $existingReference->mobile = $reference['mobile'];
+                $existingReference->updated_by = $request->session()->get('USER_ID');
+                $existingReference->updated_on = now();
+                $existingReference->save();
+            } else {
+                $newReference = new References();
+                $newReference->staff_id = $staffId;
+                $newReference->name = $reference['name'];
+                $newReference->relationship = $reference['relationship'];
+                $newReference->mobile = $reference['mobile'];
+                $newReference->created_by = $request->session()->get('USER_ID');
+                $newReference->created_on = now();
+                $newReference->updated_by = $request->session()->get('USER_ID');
+                $newReference->updated_on = now();
+                $newReference->save();
             }
-
-            $user = Users::updateOrCreate(
-                ['staff_id' => $staff->id],
-                [
-                    'username' => $staff->mobile_number,
-                    'password' => Hash::make($request->first_name . '@123'),
-                    'updated_by' => $request->session()->get('USER_ID'),
-                    'updated_on' => now(),
-                ]
-            );
-
-            if (!$isUpdate) {
-                $user->created_by = $request->session()->get('USER_ID');
-                $user->created_on = now();
-                $user->save();
-            }
-
-            $message = $isUpdate ? 'Staff member ' . $staff->first_name . ' ' . $staff->last_name . ' has been updated successfully!' : 'Staff member ' . $staff->first_name . ' ' . $staff->last_name . ' has been created successfully!';
-
-            return response()->json(['message' => $message]);
-
-        } catch (\Exception $e) {
-            Log::error('Error saving staff record: ' . $e->getMessage());
-            return response()->json(['error' => 'An error occurred while saving the staff. Please try again later.']);
         }
-
     }
 
     public function deleteStaff(Request $request)
