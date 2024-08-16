@@ -72,7 +72,7 @@
     </div>
     <div>
         <a href="javascript:void(0)" class="btn btn-danger me-2 disabled" id="delete_button" onClick="open_delete_modal()"><i class="bx bx-trash"></i> Delete</a>
-        <a href="#" class="btn btn-primary me-3" id="openModal"><i class='bx bx-plus-circle' ></i> New
+        <a href="{{ route('admin.staff.add') }}" class="btn btn-primary me-3"><i class='bx bx-plus-circle' ></i> New
             Staff</a>
     </div>
 </div>
@@ -172,39 +172,6 @@ $('#datatable').on('click', '.edit', function() {
     });
 });
 
-$("#add_update_form").submit(function(event) {
-    event.preventDefault();
-    const formData = new FormData(this);
-    $.ajax({
-        url: "{{ route('admin.staff.saveStaff') }}",
-        type: 'POST',
-        processData: false,
-        contentType: false,
-        headers: {
-            'X-CSRF-TOKEN': "{{ csrf_token() }}"
-        },
-        data: formData,
-        success: function(response) {
-            toastr.success(response.message);
-            clearForm('add_update_form');
-            $('#add_update_form .form-control').addClass("is-valid");
-            $('.bs-example-modal-xl').modal('hide');
-            $('#datatable').DataTable().ajax.reload(null, false);
-        },
-        error: function(xhr) {
-            if (xhr.status === 422) {
-                var errors = xhr.responseJSON.errors;
-                $.each(errors, function(key, value) {
-                    var fieldSelector = '#' + key;
-                    validateField(fieldSelector, value[0]);
-                });
-            } else {
-                toastr.error('An error occurred. Please try again.');
-            }
-        }
-    });
-    
-});
 
 $('#add_update_form .form-control').on('input', function() {
     var fieldId = '#' + $(this).attr('id');
@@ -236,6 +203,7 @@ $(document).on('click', '.delete_records', function () {
             if (response.message) {
                 toastr.success(response.message);
                 $('#datatable').DataTable().ajax.reload(null, false);
+                $('.select_checkbox_all').prop('checked', false);
                 $('.delete_modal').modal('hide');
             } else if (response.error) {
                 toastr.error(response.error);
@@ -272,16 +240,22 @@ $(document).on('click', '.select_checkbox', function () {
         }
     }
     $('.select_checkbox_all').prop('checked', rowCount === delete_selected_id_array.length);
+
 });
 
-$('.select_checkbox_all').on('click', function () {
+$(document).on('click', '.select_checkbox_all', function () {
     var isChecked = $(this).is(':checked');
     var selectedCheckboxes = $('.select_checkbox');
+    if (!isChecked) {
+        delete_selected_id_array = [];
+    }
     selectedCheckboxes.each(function() {
         this.checked = isChecked;
         var id = $(this).data('id');
         if (isChecked) {
-            delete_selected_id_array.push(id);
+            if (!delete_selected_id_array.includes(id)) {
+                delete_selected_id_array.push(id);
+            }
             $(this).parents('tr').css('background-color', '#ffc7c7');
         } else {
             $(this).parents('tr').css('background-color', 'initial');
@@ -289,5 +263,6 @@ $('.select_checkbox_all').on('click', function () {
     });
     $('#delete_button').toggleClass('disabled', !isChecked);
 });
+
 </script>
 @endsection
