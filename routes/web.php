@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\StaffsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\WorksController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -32,5 +33,12 @@ Route::middleware('admin')->group(function () {
         Route::get('/get-staffs', 'getStaffs')->name('admin.staff.getStaffs');
         Route::get('/edit-staff/{id}', 'getStaffDataForEdit')->name('admin.staff.getStaffDataForEdit');
         Route::post('/delete-staff', 'deleteStaff')->name('admin.staff.deleteStaff');
+    });
+    Route::controller(WorksController::class)->group(function () {
+        Route::get('/works', 'index')->name('admin.work.index');
+        Route::post('/work/save', 'saveWork')->name('admin.work.save');
+        Route::get('/get-works', 'getWorks')->name('admin.work.getWorks');
+        Route::get('/get-work/{id}', 'getWork')->name('admin.work.getWork');
+        Route::post('/work/delete', 'deleteWork')->name('admin.work.delete');
     });
 });

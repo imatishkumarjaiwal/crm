@@ -3,20 +3,20 @@
 use App\Models\Staffs;
 use App\Models\User;
 
-if (!function_exists('getUserName')) {
-   function getUserName($userId) {
-       $user = User::find($userId);
-       $userName = '';
-       if ($user) {
+if (!function_exists('getUserInfo')) {
+    function getUserInfo($userId) {
+        $userInfo = [];
+        $user = User::find($userId);
+        if ($user) {
             if ($user->staff_id) {
                 $staff = Staffs::find($user->staff_id);
                 if ($staff) {
-                    $userName = $staff->first_name .' '. $staff->last_name;
+                    $userInfo['user_name'] = $staff->first_name .' '. $staff->last_name;
+                    $userInfo['user_photo'] = $staff->photo;
                 }
-            }else{
-                $userName = $user->username;
             }
-       }
-       return $userName;
-   }
+        }
+
+        return $userInfo;
+    }
 }
