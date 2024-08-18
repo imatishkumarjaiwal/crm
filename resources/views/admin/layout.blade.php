@@ -92,9 +92,9 @@
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="rounded-circle header-profile-user" src="{{ asset('assets/images/users/avatar-1.jpg') }}"
+                                <img class="rounded-circle header-profile-user" src="{{ asset('storage/' . getUserInfo(session('USER_ID'))['user_photo']) }}"
                                     alt="Header Avatar">
-                                <span class="d-none d-xl-inline-block ms-1">{{ getUserName(session('USER_ID')) }}</span>
+                                    <span class="d-none d-xl-inline-block ms-1">{{ getUserInfo(session('USER_ID'))['user_name'] }}</span>
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
@@ -130,8 +130,9 @@
                                         <i class="bx bxs-grid me-2"></i> Masters <div class="arrow-down"></div>
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="topnav-advancedkit">
-                                        <a href="{{ route('admin.staff.index') }}" class="dropdown-item">Staff</a>
-                                        <a href="advanced-rangeslider.html" class="dropdown-item">Client</a>
+                                        <a href="{{ route('admin.staff.index') }}" class="dropdown-item">Staffs</a>
+                                        <a href="advanced-rangeslider.html" class="dropdown-item">Clients</a>
+                                        <a href="{{ route('admin.work.index') }}" class="dropdown-item">Works</a>
                                         <a href="{{  route('admin.blankPage') }}" class="dropdown-item">Blank Page</a>
                                     </div>
                                 </li>
