@@ -92,9 +92,17 @@
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="rounded-circle header-profile-user" src="<?php echo e(asset('storage/' . getUserInfo(session('USER_ID'))['user_photo'])); ?>"
-                                    alt="Header Avatar">
-                                    <span class="d-none d-xl-inline-block ms-1"><?php echo e(getUserInfo(session('USER_ID'))['user_name']); ?></span>
+                                <?php
+                                    $userInfo = getUserInfo(session('USER_ID'));
+                                ?>
+
+                                <?php if(isset($userInfo['user_photo']) && $userInfo['user_photo']): ?>
+                                    <img class="rounded-circle header-profile-user" src="<?php echo e(asset('storage/' . $userInfo['user_photo'])); ?>" alt="Header Avatar">
+                                    <span class="d-none d-xl-inline-block ms-1"><?php echo e($userInfo['user_name']); ?></span>
+                                <?php else: ?>
+                                    <img class="rounded-circle header-profile-user" src="<?php echo e(asset('storage/photos/avatar-1.jpg')); ?>" alt="Default Avatar">
+                                    <span class="d-none d-xl-inline-block ms-1">Guest</span>
+                                <?php endif; ?>
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
@@ -129,6 +137,7 @@
                                         <a href="<?php echo e(route('admin.staff.index')); ?>" class="dropdown-item">Staffs</a>
                                         <a href="advanced-rangeslider.html" class="dropdown-item">Clients</a>
                                         <a href="<?php echo e(route('admin.work.index')); ?>" class="dropdown-item">Works</a>
+                                        <a href="<?php echo e(route('admin.holiday.index')); ?>" class="dropdown-item">Holidays</a>
                                         <a href="<?php echo e(route('admin.blankPage')); ?>" class="dropdown-item">Blank Page</a>
                                     </div>
                                 </li>
