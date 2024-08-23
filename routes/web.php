@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\StaffsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\WorksController;
@@ -40,5 +41,12 @@ Route::middleware('admin')->group(function () {
         Route::get('/get-works', 'getWorks')->name('admin.work.getWorks');
         Route::get('/get-work/{id}', 'getWork')->name('admin.work.getWork');
         Route::post('/work/delete', 'deleteWork')->name('admin.work.delete');
+    });
+    Route::controller(HolidaysController::class)->group(function () {
+        Route::get('/holidays', 'index')->name('admin.holiday.index');
+        Route::post('/holiday/save', 'saveHoliday')->name('admin.holiday.save');
+        Route::get('/get-holiday', 'getHolidays')->name('admin.holiday.getHolidays');
+        Route::get('/get-holiday/{id}', 'getHoliday')->name('admin.holiday.getHoliday');
+        Route::post('/holiday/delete', 'deleteHoliday')->name('admin.holiday.delete');
     });
 });
