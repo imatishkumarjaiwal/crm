@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Staffs;
+use App\Models\MstStaff;
 use App\Models\User;
 
 if (!function_exists('getUserInfo')) {
@@ -10,10 +10,10 @@ if (!function_exists('getUserInfo')) {
 
         if ($user) {
             if ($user->staff_id) {
-                $staff = Staffs::find($user->staff_id);
+                $staff = MstStaff::find($user->staff_id);
                 if ($staff) {
-                    $userInfo['user_name'] = $staff->first_name . ' ' . $staff->last_name;
-                    $userInfo['user_photo'] = $staff->photo ?? 'photos/avatar-1.jpg';
+                    $userInfo['user_name'] = $staff->staff_first_name . ' ' . $staff->staff_last_name;
+                    $userInfo['user_photo'] = $staff->staff_photo ?? 'photos/avatar-1.jpg';
                 }
             } else {
                 $userInfo['user_name'] = $user->username;

@@ -1,0 +1,10 @@
+@extends('layout')
+@section('page-title', '{{name}}')
+@section('page-content')
+<div class="row">
+    <h1>{{name}}</h1>
+</div> <!-- end row-->
+@endsection
+@section('footer')
+@endsection
+

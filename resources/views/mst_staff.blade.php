@@ -1,5 +1,5 @@
-@extends('admin.layout')
-@section('page-title', 'Works')
+@extends('layout')
+@section('page-title', 'MstStaff')
 @section('page-content')
 
 <!--  Delete Modal -->
@@ -18,46 +18,15 @@
     </div>
 </div>
 
-<!--  Add / Update Modal -->
-<div class="modal fade bs-example-modal-xl" id="add_update_modal" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <h5 class="modal-title text-white" id="myExtraLargeModalLabel">Add / Update Work</h5>
-                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="add_update_form" method="POST">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-4 mb-3">
-                            <label for="title" class="form-label">Work Title<span class="required-field">*</span></label>
-                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter Work Title">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="description" class="form-label">Work Description</label>
-                            <textarea class="form-control" id="description" name="description" placeholder="Enter Work Description"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="hidden" id="work_id" name="work_id">
-                    <input type="submit" class="btn btn-success save_data" value="Save data">
-                    <a href="javascript:void(0)" class="btn btn-danger" data-bs-dismiss="modal">Cancel</a>
-                </div>
-            </form>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
 <div class="form-head d-flex mb-sm-4 mb-3">
     <div class="me-auto">
-        <h2 class="text-black font-w600">Works</h2>
-        <p class="mb-0">View / Add / Update / Delete Works </p>
+        <h2 class="text-black font-w600">Staffs</h2>
+        <p class="mb-0">View / Add / Update / Delete Staffs </p>
     </div>
     <div>
         <a href="javascript:void(0)" class="btn btn-danger me-2 disabled" id="delete_button" onClick="open_delete_modal()"><i class="bx bx-trash"></i> Delete</a>
-        <a href="javascript:void(0)" class="btn btn-primary me-3" id="openModal"><i class='bx bx-plus-circle' ></i> New
-            Work</a>
+        <a href="{{ route('mst_staff.add') }}" class="btn btn-primary me-3"><i class='bx bx-plus-circle' ></i> New
+            Staff</a>
     </div>
 </div>
 
@@ -69,9 +38,11 @@
                     <thead>
                         <tr>
                             <th><input class="form-check-input select_checkbox_all" type="checkbox"> &nbsp; Action</th>
-                            <th>Work Title</th>
-                            <th>Work Description</th>
-                            <th>Updated On</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Mobile Number</th>
+                            <th>Created On</th>
                         </tr>
                     </thead>
                 </table>
@@ -89,12 +60,14 @@ var delete_selected_id_array = [];
 var table = $('#datatable').DataTable({
     processing: true,
     serverSide: true,
-    ajax: "{{ route('admin.work.getWorks') }}",
+    ajax: "{{ route('mst_staff.getStaffs') }}",
     columns: [
         {data: 'action', name: 'action', orderable: false, searchable: false},
-        {data: 'title', name: 'title'},
-        {data: 'description', name: 'description'},
-        {data: 'updated_on', name: 'updated_on'}
+        {data: 'staff_first_name', name: 'staff_first_name'},
+        {data: 'staff_last_name', name: 'staff_last_name'},
+        {data: 'staff_email', name: 'staff_email'},
+        {data: 'staff_mobile', name: 'staff_mobile'},
+        {data: 'staff_createdon', name: 'staff_createdon'}
     ]
 });
 
@@ -122,74 +95,13 @@ function validateField(field, message) {
     }
 }
 
-$('#datatable').on('click', '.edit', function() {
-    var id = $(this).data('id');
-    clearForm('add_update_form');
-    var url = "{{ route('admin.work.getWork', ':id') }}";
-    url = url.replace(':id', id);
-
-    $.ajax({
-        url: url,
-        type: 'GET',
-        success: function(response) {
-            console.log(response);
-            $('#add_update_modal').modal('show');
-            $('#add_update_modal #title').val(response.data.title);
-            $('#add_update_modal #description').val(response.data.description);
-            $('#add_update_modal #work_id').val(response.data.id);
-        },
-        error: function(xhr) {
-            if (xhr.status === 404) {
-                var response = xhr.responseJSON;
-                toastr.error(response.message);
-            } else {
-                toastr.error('Failed to retrieve staff details.');
-            }
-        }
-    });
-});
-
 
 $('#add_update_form .form-control').on('input', function() {
     var fieldId = '#' + $(this).attr('id');
     if ($(this).val()) {
-        $(this).removeClass("is-invalid");
+        $(this).addClass("is-valid").removeClass("is-invalid");
         $(this).siblings(".invalid-feedback").remove();
     }
-});
-
-$("#add_update_form").submit(function(event) {
-    event.preventDefault();
-    const formData = new FormData(this);
-    $.ajax({
-        url: "{{ route('admin.work.save') }}",
-        type: 'POST',
-        processData: false,
-        contentType: false,
-        headers: {
-            'X-CSRF-TOKEN': "{{ csrf_token() }}"
-        },
-        data: formData,
-        success: function(response) {
-            toastr.success(response.message);
-            clearForm('add_update_form');
-            $('#add_update_form .form-control').addClass("is-valid");
-            $('.bs-example-modal-xl').modal('hide');
-            $('#datatable').DataTable().ajax.reload(null, false);
-        },
-        error: function(xhr) {
-            if (xhr.status === 422) {
-                var errors = xhr.responseJSON.errors;
-                $.each(errors, function(key, value) {
-                    var fieldSelector = '#' + key;
-                    validateField(fieldSelector, value[0]);
-                });
-            } else {
-                toastr.error('An error occurred. Please try again.');
-            }
-        }
-    });
-    
 });
 
 function open_delete_modal() {
@@ -200,7 +112,7 @@ function open_delete_modal() {
 
 $(document).on('click', '.delete_records', function () {
     var deleteIds = $('#delete_ids').val();
-    var url = "{{ route('admin.work.delete') }}";
+    var url = "{{ route('mst_staff.deleteStaff') }}";
     $.ajax({
         url: url,
         type: 'POST',
@@ -277,3 +189,4 @@ $(document).on('click', '.select_checkbox_all', function () {
 
 </script>
 @endsection
+

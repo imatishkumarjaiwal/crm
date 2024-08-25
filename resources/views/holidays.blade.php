@@ -1,5 +1,5 @@
-@extends('admin.layout')
-@section('page-title', 'Staffs')
+@extends('layout')
+@section('page-title', 'Holidays')
 @section('page-content')
 
 <!--  Delete Modal -->
@@ -23,40 +23,74 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h5 class="modal-title text-white" id="myExtraLargeModalLabel">Add / Update Staff</h5>
+                <h5 class="modal-title text-white" id="myExtraLargeModalLabel">Add / Update Holiday</h5>
                 <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="add_update_form" method="POST">
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-4 mb-3">
-                            <label for="first_name" class="form-label">First Name<span class="required-field">*</span></label>
-                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="middle_name" class="form-label">Middle Name</label>
-                            <input type="text" class="form-control" id="middle_name" name="middle_name" placeholder="Enter Middle Name">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="last_name" class="form-label">Last Name<span class="required-field">*</span></label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="mobile_number" class="form-label">Mobile Number(Username)<span class="required-field">*</span></label>
-                            <input type="number" class="form-control" id="mobile_number" name="mobile_number" placeholder="Enter Mobile Number">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="email" class="form-label">Email<span class="required-field">*</span></label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            <textarea class="form-control" id="address" name="address" placeholder="Enter Address"></textarea>
+                    <div class="row mb-3" id="holiday_type">
+                        <label for="inputEmail3" class="col-sm-2 col-4 col-form-label">Holiday Type</label>
+                        <div class="col-sm-10 col-8 mt-1">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="type" id="single" value="Single" checked="">
+                                <label class="form-check-label" for="single"> &nbsp; Holiday (Single)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="type" id="single" value="Multiple">
+                                <label class="form-check-label" for="single"> &nbsp; Weekly Off (Multiple)</label>
+                            </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="title" class="form-label">Holiday Title<span class="required-field">*</span></label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter Work Title">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="from_date" class="form-label">Holiday From Date<span class="required-field">*</span></label>
+                            <input type="date" class="form-control" id="from_date" name="from_date">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="to_date" class="form-label">Holiday To Date<span class="required-field">*</span></label>
+                            <input type="date" class="form-control" id="to_date" name="to_date" readonly>
+                        </div>
+                    </div>
+                    <div id="multiple" style="display: none;">
+                        <label class="form-label">Weekly Off:<span class="required-field">*</span></label>
+                        &nbsp;
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="monday" name="days[]" value="1">
+                            <label class="form-check-label" for="monday">&nbsp;Mon</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="tuesday" name="days[]" value="2">
+                            <label class="form-check-label" for="tuesday">&nbsp;Tue</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="wednesday" name="days[]" value="3">
+                            <label class="form-check-label" for="wednesday">&nbsp;Wed</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="thursday" name="days[]" value="4">
+                            <label class="form-check-label" for="thursday">&nbsp;Thu</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="friday" name="days[]" value="5">
+                            <label class="form-check-label" for="friday">&nbsp;Fri</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="saturday" name="days[]" value="6">
+                            <label class="form-check-label" for="saturday">&nbsp;Sat</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="sunday" name="days[]" value="7">
+                            <label class="form-check-label" for="sunday">&nbsp;Sun</label>
+                        </div>
+                    </div>
+                    
                 </div>
                 <div class="modal-footer">
-                    <input type="hidden" id="staff_id" name="staff_id">
+                    <input type="hidden" id="holiday_id" name="holiday_id">
                     <input type="submit" class="btn btn-success save_data" value="Save data">
                     <a href="javascript:void(0)" class="btn btn-danger" data-bs-dismiss="modal">Cancel</a>
                 </div>
@@ -67,13 +101,13 @@
 
 <div class="form-head d-flex mb-sm-4 mb-3">
     <div class="me-auto">
-        <h2 class="text-black font-w600">Staffs</h2>
-        <p class="mb-0">View / Add / Update / Delete Staffs </p>
+        <h2 class="text-black font-w600">Holidays</h2>
+        <p class="mb-0">View / Add / Update / Delete Holidays</p>
     </div>
     <div>
         <a href="javascript:void(0)" class="btn btn-danger me-2 disabled" id="delete_button" onClick="open_delete_modal()"><i class="bx bx-trash"></i> Delete</a>
-        <a href="{{ route('admin.staff.add') }}" class="btn btn-primary me-3"><i class='bx bx-plus-circle' ></i> New
-            Staff</a>
+        <a href="javascript:void(0)" class="btn btn-primary me-3" id="openModal"><i class='bx bx-plus-circle' ></i> New
+            Holiday</a>
     </div>
 </div>
 
@@ -85,10 +119,9 @@
                     <thead>
                         <tr>
                             <th><input class="form-check-input select_checkbox_all" type="checkbox"> &nbsp; Action</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>Mobile Number</th>
+                            <th>Holiday Name</th>
+                            <th>Holiday Date</th>
+                            <th>Holiday Day</th>
                             <th>Updated On</th>
                         </tr>
                     </thead>
@@ -107,15 +140,36 @@ var delete_selected_id_array = [];
 var table = $('#datatable').DataTable({
     processing: true,
     serverSide: true,
-    ajax: "{{ route('admin.staff.getStaffs') }}",
+    ajax: "{{ route('holiday.getHolidays') }}",
     columns: [
         {data: 'action', name: 'action', orderable: false, searchable: false},
-        {data: 'first_name', name: 'first_name'},
-        {data: 'last_name', name: 'last_name'},
-        {data: 'email', name: 'email'},
-        {data: 'mobile_number', name: 'mobile_number'},
-        {data: 'updated_on', name: 'updated_on'}
+        {data: 'title', name: 'title'},
+        {data: 'date', name: 'date'},
+        {data: 'day', name: 'day'},
+        {data: 'last_updated', name: 'last_updated'}
     ]
+});
+
+$('input[name="type"]').change(function() {
+    var selectedValue = $(this).val();
+    if (selectedValue === 'Multiple') {
+        $('#to_date').removeAttr('readonly');
+        $('#multiple').show();
+    } else {
+        $('#to_date').attr('readonly', true);
+        $('#multiple').hide();
+    }
+    $('#title, #to_date, #from_date').val('');
+});
+
+$('#from_date').change(function () {
+    var type = $('input[name="type"]:checked').val(); 
+    if (type === 'Single') {
+        var from_date = $(this).val();
+        $('#to_date').val(from_date);
+    }else{
+        $('#to_date').val('');
+    }
 });
 
 function clearForm(formId) {
@@ -129,6 +183,11 @@ function clearForm(formId) {
 
 $('#openModal').on('click', function (event) {
     clearForm('add_update_form');
+    var type = $('input[name="type"]:checked').val(); 
+    if (type === 'Single') {
+        $('#to_date').attr('readonly', true);
+        $('#multiple').hide();
+    }
     $('#add_update_modal').modal('show');
 });
 
@@ -145,28 +204,27 @@ function validateField(field, message) {
 $('#datatable').on('click', '.edit', function() {
     var id = $(this).data('id');
     clearForm('add_update_form');
-    var url = "{{ route('admin.staff.getStaffDataForEdit', ':id') }}";
+    var url = "{{ route('holiday.getHoliday', ':id') }}";
     url = url.replace(':id', id);
-
+    $('#holiday_type').hide();
+    $('#add_update_modal').modal('show');
     $.ajax({
         url: url,
         type: 'GET',
         success: function(response) {
             console.log(response);
             $('#add_update_modal').modal('show');
-            $('#add_update_modal #first_name').val(response.data.first_name);
-            $('#add_update_modal #last_name').val(response.data.last_name);
-            $('#add_update_modal #email').val(response.data.email);
-            $('#add_update_modal #mobile_number').val(response.data.mobile_number);
-            $('#add_update_modal #address').val(response.data.address);
-            $('#add_update_modal #staff_id').val(response.data.id);
+            $('#add_update_modal #title').val(response.data.title);
+            $('#add_update_modal #from_date').val(response.data.date);
+            $('#add_update_modal #to_date').val(response.data.date);
+            $('#add_update_modal #holiday_id').val(response.data.id);
         },
         error: function(xhr) {
             if (xhr.status === 404) {
                 var response = xhr.responseJSON;
                 toastr.error(response.message);
             } else {
-                toastr.error('Failed to retrieve staff details.');
+                toastr.error('Failed to retrieve holiday details.');
             }
         }
     });
@@ -176,9 +234,45 @@ $('#datatable').on('click', '.edit', function() {
 $('#add_update_form .form-control').on('input', function() {
     var fieldId = '#' + $(this).attr('id');
     if ($(this).val()) {
-        $(this).addClass("is-valid").removeClass("is-invalid");
+        $(this).removeClass("is-invalid");
         $(this).siblings(".invalid-feedback").remove();
     }
+});
+
+$("#add_update_form").submit(function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+    $.ajax({
+        url: "{{ route('holiday.save') }}",
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+        },
+        data: formData,
+        success: function(response) {
+            toastr.success(response.message);
+            clearForm('add_update_form');
+            $('#add_update_form .form-control').addClass("is-valid");
+            $('.bs-example-modal-xl').modal('hide');
+            $('#datatable').DataTable().ajax.reload(null, false);
+        },
+        error: function(xhr) {
+            if (xhr.status === 422) {
+                var errors = xhr.responseJSON.errors;
+                $.each(errors, function(key, value) {
+                    var fieldSelector = '#' + key;
+                    validateField(fieldSelector, value[0]);
+                });
+            } else if (xhr.status === 400) {
+                toastr.error(xhr.responseJSON.error);
+            } else {
+                toastr.error('An error occurred. Please try again.');
+            }
+        }
+    });
+    
 });
 
 function open_delete_modal() {
@@ -189,7 +283,7 @@ function open_delete_modal() {
 
 $(document).on('click', '.delete_records', function () {
     var deleteIds = $('#delete_ids').val();
-    var url = "{{ route('admin.staff.deleteStaff') }}";
+    var url = "{{ route('holiday.delete') }}";
     $.ajax({
         url: url,
         type: 'POST',

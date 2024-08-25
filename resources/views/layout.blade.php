@@ -38,7 +38,7 @@
                     <div class="d-flex">
                         <!-- LOGO -->
                         <div class="navbar-brand-box">
-                            <a href="{{ route('admin.dashboard') }}">
+                            <a href="{{ route('dashboard') }}">
                                 <h3 style="color: white;padding-top: 16px;">CRM</h3>
                             </a>
                         </div>
@@ -129,7 +129,7 @@
                         <div class="collapse navbar-collapse" id="topnav-menu-content">
                             <ul class="navbar-nav">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                                    <a class="nav-link" href="{{ route('dashboard') }}">
                                         <i class="bx bxs-dashboard me-2"></i><span key="t-ui-elements">Dashboard</span>
                                     </a>
                                 </li>
@@ -138,11 +138,11 @@
                                         <i class="bx bxs-grid me-2"></i> Masters <div class="arrow-down"></div>
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="topnav-advancedkit">
-                                        <a href="{{ route('admin.staff.index') }}" class="dropdown-item">Staffs</a>
+                                        <a href="{{ route('mst_staff.index') }}" class="dropdown-item">Staffs</a>
                                         <a href="advanced-rangeslider.html" class="dropdown-item">Clients</a>
-                                        <a href="{{ route('admin.work.index') }}" class="dropdown-item">Works</a>
-                                        <a href="{{ route('admin.holiday.index') }}" class="dropdown-item">Holidays</a>
-                                        <a href="{{  route('admin.blankPage') }}" class="dropdown-item">Blank Page</a>
+                                        <a href="{{ route('work.index') }}" class="dropdown-item">Works</a>
+                                        <a href="{{ route('holiday.index') }}" class="dropdown-item">Holidays</a>
+                                        <a href="{{  route('blankPage') }}" class="dropdown-item">Blank Page</a>
                                     </div>
                                 </li>
                                 {{-- <li class="nav-item dropdown">

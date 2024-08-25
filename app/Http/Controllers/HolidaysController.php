@@ -13,7 +13,7 @@ class HolidaysController extends Controller
 {
     public function index()
     {
-        return view('admin.holidays');
+        return view('holidays');
     }
 
     public function getHolidays(Request $request)
