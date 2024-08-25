@@ -26,10 +26,6 @@ return new class extends Migration
             $table->timestamp('deleted_on')->nullable(); // Timestamp for deletion.
             $table->boolean('deleted_status')->default(false); // Boolean status for deletion.
             $table->timestamp('last_updated')->nullable(); // Timestamp for last updated.
-
-            // Optionally add foreign key constraints
-            $table->foreign('staff_id')->references('id')->on('staffs')->onDelete('cascade')->onUpdate('cascade');
-
         });
 
         Schema::create('sessions', function (Blueprint $table) {

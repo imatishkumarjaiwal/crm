@@ -24,9 +24,9 @@ class UsersController extends Controller
             'username' => 'required|digits:10',
             'password' => 'required',
         ]);
-
+    
         $userInfo = Users::where('username', $request->username)->first();
-
+    
         if ($userInfo && Hash::check($request->password, $userInfo->password)) {
             $request->session()->put('USER_LOGIN', true);
             $request->session()->put('USER_ID', $userInfo->id);
@@ -34,18 +34,18 @@ class UsersController extends Controller
             return redirect('/dashboard');
         } else {
             $errorMessage = $userInfo ? 'Invalid password. Please try again.' : 'Invalid credentials. Please try again.';
-            return back()->with('error', $errorMessage)->withInput();
+            return back()->withErrors(['authentication' => $errorMessage])->withInput();
         }
     }
 
     public function dashboard()
     {
-        return view('admin.dashboard');
+        return view('dashboard');
     }
 
     public function blankPage()
     {
-        return view('admin.blankPage');
+        return view('blankPage');
     }
 
     /**

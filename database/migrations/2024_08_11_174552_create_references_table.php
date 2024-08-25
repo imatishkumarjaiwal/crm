@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('references', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('staff_id'); // Foreign key for staff
+            $table->unsignedBigInteger('staff_id');
             $table->string('name');
             $table->string('relationship');
             $table->string('mobile');
@@ -25,7 +25,6 @@ return new class extends Migration
             $table->timestamp('deleted_on')->nullable();
             $table->boolean('deleted_status')->default(false);
             $table->timestamp('last_updated')->nullable();
-            $table->foreign('staff_id')->references('id')->on('staffs')->onDelete('cascade');
         });
     }
 

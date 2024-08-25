@@ -1,8 +1,5 @@
 <!doctype html>
 <html lang="en">
-
-    
-<!-- Mirrored from www.preview.pichforest.com/samply/layouts/auth-register.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 19 Jul 2024 03:41:40 GMT -->
 <head>
         
         <meta charset="utf-8" />
@@ -26,52 +23,48 @@
 
     <!-- <body data-layout="horizontal" data-topbar="dark"> -->
         <div class="account-pages">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-md-6">
+            <div class="container" style="max-width: 1420px;">
+                <div class="row justify-content-start">
+                    <div class="col-md-4">
                         <div class="card overflow-hidden shadow border border-info">
                             <div class="row g-0">
                                 <div class="col-lg-12">
-                                    <div class="p-lg-5 p-4">
-
-                                        <div>
+                                    <div class="p-lg-4 p-2">
+                                        <div class="text-center">
                                             <h5>Register account</h5>
                                             <p class="text-muted">Get your free Samply account now.</p>
                                         </div>
-                                    
                                         <div class="mt-4 pt-3">
                                             <form action="{{ url('/signup') }}">
+                                                @csrf
                                                 <div class="mb-3">
-                                                    <label class="fw-semibold" for="username">Username</label>
-                                                    <input type="text" class="form-control" id="username" placeholder="Enter username">
+                                                    <label for="username" class="fw-semibold">Username</label>
+                                                    <input type="text" class="form-control @error('username') is-invalid @enderror" id="username" name="username" placeholder="Enter username">
                                                 </div>
-                        
-                                                <div class="mb-3">
-                                                    <label class="fw-semibold" for="password">Password</label>
-                                                    <input type="password" class="form-control" id="password" placeholder="Enter password">        
+                                                <div class="mb-3 mb-4">
+                                                    <label for="password" class="fw-semibold">Password</label>
+                                                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
                                                 </div>
-                        
-                                                <div class="mt-4 text-end">
-                                                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Register</button>
+                                                <div class="row align-items-center">
+                                                    <div class="col-12">
+                                                        <div class="text-end">
+                                                            <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Register</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
-
                                             </form>
                                         </div>
-                    
+                                        <div class="text-center mt-4">
+                                            <p>Already have an account ? <a href="{{ url('/') }}" class="fw-semibold text-decoration-underline"> Login </a> </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- end card -->
-                        <div class="mt-5 text-center">
-                            <p>Already have an account ? <a href="{{ url('/') }}" class="fw-semibold text-decoration-underline"> Login </a> </p>
-                        </div>
                     </div>
-                    <!-- end col -->
                 </div>
-                <!-- end row -->
             </div>
-            <!-- end container -->
         </div>
         <!-- end account page -->
 
@@ -85,6 +78,4 @@
         <script src="assets/js/app.js"></script>
 
     </body>
-
-<!-- Mirrored from www.preview.pichforest.com/samply/layouts/auth-register.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 19 Jul 2024 03:41:40 GMT -->
 </html>

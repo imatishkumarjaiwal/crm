@@ -12,7 +12,7 @@ class WorksController extends Controller
 {
     public function index()
     {
-        return view('admin.works');
+        return view('works');
     }
 
     public function saveWork(Request $request)
