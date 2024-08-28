@@ -139,9 +139,11 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="topnav-advancedkit">
                                         <a href="{{ route('mst_staff.index') }}" class="dropdown-item">Staffs</a>
-                                        <a href="advanced-rangeslider.html" class="dropdown-item">Clients</a>
-                                        <a href="{{ route('work.index') }}" class="dropdown-item">Works</a>
+                                        <a href="{{ route('mst_works.index') }}" class="dropdown-item">Works</a>
                                         <a href="{{ route('holiday.index') }}" class="dropdown-item">Holidays</a>
+                                        <a href="{{ route('mst_status.index') }}" class="dropdown-item">Status</a>
+                                        <a href="{{ route('mst_clients.index') }}" class="dropdown-item">Clients</a>
+
                                         <a href="{{  route('blankPage') }}" class="dropdown-item">Blank Page</a>
                                     </div>
                                 </li>
