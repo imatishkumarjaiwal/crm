@@ -1,5 +1,5 @@
-@extends('layout')
-@section('page-title', 'Works')
+@extends('admin.layout')
+@section('page-title', 'Status')
 @section('page-content')
 
 <!--  Delete Modal -->
@@ -23,24 +23,24 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h5 class="modal-title text-white" id="myExtraLargeModalLabel">Add / Update Work</h5>
+                <h5 class="modal-title text-white" id="myExtraLargeModalLabel">Add / Update status</h5>
                 <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="add_update_form" method="POST">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-4 mb-3">
-                            <label for="title" class="form-label">Work Title<span class="required-field">*</span></label>
-                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter Work Title">
+                            <label for="title" class="form-label">Status Title<span class="required-field">*</span></label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter status Title">
                         </div>
                         <div class="col-lg-4 mb-3">
-                            <label for="description" class="form-label">Work Description</label>
-                            <textarea class="form-control" id="description" name="description" placeholder="Enter Work Description"></textarea>
+                            <label for="description" class="form-label">Status Description</label>
+                            <textarea class="form-control" id="description" name="description" placeholder="Enter status Description"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="hidden" id="work_id" name="work_id">
+                    <input type="hidden" id="status_id" name="status_id">
                     <input type="submit" class="btn btn-success save_data" value="Save data">
                     <a href="javascript:void(0)" class="btn btn-danger" data-bs-dismiss="modal">Cancel</a>
                 </div>
@@ -51,13 +51,13 @@
 
 <div class="form-head d-flex mb-sm-4 mb-3">
     <div class="me-auto">
-        <h2 class="text-black font-w600">Works</h2>
-        <p class="mb-0">View / Add / Update / Delete Works </p>
+        <h2 class="text-black font-w600">Status</h2>
+        <p class="mb-0">View / Add / Update / Delete Status </p>
     </div>
     <div>
         <a href="javascript:void(0)" class="btn btn-danger me-2 disabled" id="delete_button" onClick="open_delete_modal()"><i class="bx bx-trash"></i> Delete</a>
         <a href="javascript:void(0)" class="btn btn-primary me-3" id="openModal"><i class='bx bx-plus-circle' ></i> New
-            Work</a>
+            status</a>
     </div>
 </div>
 
@@ -69,8 +69,8 @@
                     <thead>
                         <tr>
                             <th><input class="form-check-input select_checkbox_all" type="checkbox"> &nbsp; Action</th>
-                            <th>Work Title</th>
-                            <th>Work Description</th>
+                            <th>Status Title</th>
+                            <th>Status Description</th>
                             <th>Updated On</th>
                         </tr>
                     </thead>
@@ -89,7 +89,7 @@ var delete_selected_id_array = [];
 var table = $('#datatable').DataTable({
     processing: true,
     serverSide: true,
-    ajax: "{{ route('work.getWorks') }}",
+    ajax: "{{ route('admin.status.getStatusRecords') }}",
     columns: [
         {data: 'action', name: 'action', orderable: false, searchable: false},
         {data: 'title', name: 'title'},
@@ -125,7 +125,7 @@ function validateField(field, message) {
 $('#datatable').on('click', '.edit', function() {
     var id = $(this).data('id');
     clearForm('add_update_form');
-    var url = "{{ route('work.getWork', ':id') }}";
+    var url = "{{ route('admin.status.getStatus', ':id') }}";
     url = url.replace(':id', id);
 
     $.ajax({
@@ -136,7 +136,7 @@ $('#datatable').on('click', '.edit', function() {
             $('#add_update_modal').modal('show');
             $('#add_update_modal #title').val(response.data.title);
             $('#add_update_modal #description').val(response.data.description);
-            $('#add_update_modal #work_id').val(response.data.id);
+            $('#add_update_modal #status_id').val(response.data.id);
         },
         error: function(xhr) {
             if (xhr.status === 404) {
@@ -162,7 +162,7 @@ $("#add_update_form").submit(function(event) {
     event.preventDefault();
     const formData = new FormData(this);
     $.ajax({
-        url: "{{ route('work.save') }}",
+        url: "{{ route('admin.status.save') }}",
         type: 'POST',
         processData: false,
         contentType: false,
@@ -200,7 +200,7 @@ function open_delete_modal() {
 
 $(document).on('click', '.delete_records', function () {
     var deleteIds = $('#delete_ids').val();
-    var url = "{{ route('work.delete') }}";
+    var url = "{{ route('admin.status.delete') }}";
     $.ajax({
         url: url,
         type: 'POST',

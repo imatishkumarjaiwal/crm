@@ -200,7 +200,7 @@
                                         @foreach($references as $index => $reference)
                                             <tr class="reference-row">
                                                 <td>
-                                                    <input type="hidden" name="references[{{ $index + 1 }}][reference_id]" value="{{ $reference->staff_id }}">
+                                                    <input type="hidden" name="references[{{ $index + 1 }}][reference_id]" value="{{ $reference->id }}">
                                                     <input type="text" class="form-control reference-name" name="references[{{ $index + 1 }}][name]" id="name{{ $index + 1 }}" placeholder="Enter Reference Full Name" value="{{ $reference->name }}">
                                                 </td>
                                                 <td>

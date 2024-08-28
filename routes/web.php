@@ -3,7 +3,10 @@
 use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\MstStaffController;
 use App\Http\Controllers\UsersController;
-use App\Http\Controllers\WorksController;
+use App\Http\Controllers\MstWorksController;
+use App\Http\Controllers\MstStatusController;
+use App\Http\Controllers\MstClientsController;
+
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -34,12 +37,12 @@ Route::middleware('admin')->group(function () {
         Route::get('/get-mst_staffs', 'getStaffs')->name('mst_staff.getStaffs');
         Route::post('/delete-mst_staff', 'deleteStaff')->name('mst_staff.deleteStaff');
     });
-    Route::controller(WorksController::class)->group(function () {
-        Route::get('/works', 'index')->name('work.index');
-        Route::post('/work/save', 'saveWork')->name('work.save');
-        Route::get('/get-works', 'getWorks')->name('work.getWorks');
-        Route::get('/get-work/{id}', 'getWork')->name('work.getWork');
-        Route::post('/work/delete', 'deleteWork')->name('work.delete');
+    Route::controller(MstWorksController::class)->group(function () {
+        Route::get('/mst_works', 'index')->name('mst_works.index');
+        Route::post('/mst_works/save', 'saveMstWorks')->name('mst_works.save');
+        Route::get('/get-mst_works', 'getMstWorksRecords')->name('mst_works.getMstWorksRecords');
+        Route::get('/get-mst_works/{id}', 'getMstWorks')->name('mst_works.getMstWorks');
+        Route::post('/mst_works/delete', 'deleteMstWorks')->name('mst_works.delete');
     });
     Route::controller(HolidaysController::class)->group(function () {
         Route::get('/holidays', 'index')->name('holiday.index');
@@ -48,4 +51,24 @@ Route::middleware('admin')->group(function () {
         Route::get('/get-holiday/{id}', 'getHoliday')->name('holiday.getHoliday');
         Route::post('/holiday/delete', 'deleteHoliday')->name('holiday.delete');
     });
+
+    Route::controller(MstStatusController::class)->group(function () 
+    {
+        Route::get('/mst_status', 'index')->name('mst_status.index');
+        Route::post('/mst_status/save', 'saveMstStatus')->name('mst_status.save');
+        Route::get('/get-mst_status', 'getMstStatusRecords')->name('mst_status.getMstStatusRecords');
+        Route::get('/get-mst_status/{id}', 'getMstStatus')->name('mst_status.getMstStatus');
+        Route::post('/mst_status/delete', 'deleteMstStatus')->name('mst_status.delete');
+    });
+
+    Route::controller(MstClientsController::class)->group(function () {
+        Route::get('/mst_clients', 'index')->name('mst_clients.index');
+        Route::get('/mst_clients/add', 'manageClients')->name('mst_clients.add');
+        Route::post('/mst_clients/insert', 'insertClients')->name('mst_clients.insert');
+        Route::get('/mst_clients/edit/{id}', 'manageClients')->name('mst_clients.edit');
+        Route::post('/mst_clients/update', 'updateClients')->name('mst_clients.update');
+        Route::get('/get-mst_clients', 'getClients')->name('mst_clients.getClients');
+        Route::post('/delete-mst_clients', 'deleteClients')->name('mst_clients.deleteStaff');
+    });
+
 });

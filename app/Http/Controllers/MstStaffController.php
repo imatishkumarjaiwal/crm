@@ -19,19 +19,19 @@ class MstStaffController extends Controller
         return view('mst_staff');
     }
 
-    public function manageStaff($staffId = '')
+    public function manageStaff($staff_Id = '')
     {
         $mst_staff = null;
         $references = [];
 
-        if (!empty($staffId)) {
-            $mst_staff = MstStaff::find($staffId);
+        if (!empty($staff_Id)) {
+            $mst_staff = MstStaff::find($staff_Id);
 
             if (!$mst_staff) {
                 return redirect()->route('mst_staff.index')->withErrors(['error' => 'Staff member not found.']);
             }
 
-            $references = References::where('staff_id', $staffId)->get();
+            $references = References::where('staff_id', $staff_Id)->get();
         }
 
         return view('manageStaff', compact('mst_staff', 'references'));
@@ -142,7 +142,8 @@ class MstStaffController extends Controller
                 }
             }
 
-            if ($request->has('references')) {
+            if ($request->has('references')) 
+            {
                 $this->saveReferences($mst_staff->staff_id, $request->references, $request, true);
             }
 
@@ -155,7 +156,7 @@ class MstStaffController extends Controller
     }
 
 
-    private function validateStaff(Request $request, $staffId = null)
+    private function validateStaff(Request $request, $staff_Id = null)
     {
         $rules = [
             'staff_first_name' => 'required|string|max:255',
@@ -163,13 +164,13 @@ class MstStaffController extends Controller
             'staff_mobile' => [
                 'required',
                 'digits:10',
-                $staffId ? 'unique:mst_staff,staff_mobile,' . $staffId . ',staff_id' : 'unique:mst_staff,staff_mobile',
+                $staff_Id ? 'unique:mst_staff,staff_mobile,' . $staff_Id . ',staff_id' : 'unique:mst_staff,staff_mobile',
             ],
             'staff_email' => [
                 'required',
                 'email',
                 'max:255',
-                $staffId ? 'unique:mst_staff,staff_email,' . $staffId . ',staff_id' : 'unique:mst_staff,staff_email',
+                $staff_Id ? 'unique:mst_staff,staff_email,' . $staff_Id . ',staff_id' : 'unique:mst_staff,staff_email',
             ],
             'references.*.name' => 'required|string|max:255',
             'references.*.relationship' => 'required|string|max:255',
@@ -209,12 +210,14 @@ class MstStaffController extends Controller
         $user->save();
     }
 
-   private function saveReferences($staffId, $references, Request $request, $isUpdate = false)
+   private function saveReferences($staff_Id, $references, Request $request, $isUpdate = false)
     {   
-        foreach ($references as $reference) {
-            if (isset($reference['reference_id'])) {
+        foreach ($references as $reference) 
+        {
+            if (isset($reference['reference_id'])) 
+            {
                 $existingReference = References::find($reference['reference_id']);
-                $existingReference->staff_id = $staffId;
+                $existingReference->staff_id = $staff_Id;
                 $existingReference->name = $reference['name'];
                 $existingReference->relationship = $reference['relationship'];
                 $existingReference->mobile = $reference['mobile'];
@@ -223,7 +226,7 @@ class MstStaffController extends Controller
                 $existingReference->save();
             } else {
                 $newReference = new References();
-                $newReference->staff_id = $staffId;
+                $newReference->staff_id = $staff_Id;
                 $newReference->name = $reference['name'];
                 $newReference->relationship = $reference['relationship'];
                 $newReference->mobile = $reference['mobile'];
