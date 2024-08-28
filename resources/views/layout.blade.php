@@ -11,20 +11,21 @@
         {{-- <link rel="shortcut icon" href="assets/images/favicon.ico"> --}}
         
         <!-- DataTables -->
-        <link href="assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- Select datatable -->
-        <link href="assets/libs/datatables.net-select-bs4/css/select.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/libs/datatables.net-select-bs4/css/select.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- Responsive datatable -->
-        <link href="assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />     
+        <link href="{{ asset('assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 
         <!-- Bootstrap Css -->
-        <link href="assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="assets/css/toastr.min.css">
+        <link href="{{ asset('assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/css/toastr.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- Icons Css -->
-        <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- App Css-->
-        <link href="assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+
     </head>
 
     <body data-topbar="dark" data-layout="horizontal">
@@ -37,7 +38,7 @@
                     <div class="d-flex">
                         <!-- LOGO -->
                         <div class="navbar-brand-box">
-                            <a href="{{ route('admin.dashboard') }}">
+                            <a href="{{ route('dashboard') }}">
                                 <h3 style="color: white;padding-top: 16px;">CRM</h3>
                             </a>
                         </div>
@@ -91,9 +92,17 @@
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-1.jpg"
-                                    alt="Header Avatar">
-                                <span class="d-none d-xl-inline-block ms-1">{{ getUserName(session('USER_ID')) }}</span>
+                                @php
+                                    $userInfo = getUserInfo(session('USER_ID'));
+                                @endphp
+
+                                @if (isset($userInfo['user_photo']) && $userInfo['user_photo'])
+                                    <img class="rounded-circle header-profile-user" src="{{ asset('storage/' . $userInfo['user_photo']) }}" alt="Header Avatar">
+                                    <span class="d-none d-xl-inline-block ms-1">{{ $userInfo['user_name'] }}</span>
+                                @else
+                                    <img class="rounded-circle header-profile-user" src="{{ asset('storage/photos/avatar-1.jpg') }}" alt="Default Avatar">
+                                    <span class="d-none d-xl-inline-block ms-1">Guest</span>
+                                @endif
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
@@ -120,7 +129,7 @@
                         <div class="collapse navbar-collapse" id="topnav-menu-content">
                             <ul class="navbar-nav">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                                    <a class="nav-link" href="{{ route('dashboard') }}">
                                         <i class="bx bxs-dashboard me-2"></i><span key="t-ui-elements">Dashboard</span>
                                     </a>
                                 </li>
@@ -129,9 +138,11 @@
                                         <i class="bx bxs-grid me-2"></i> Masters <div class="arrow-down"></div>
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="topnav-advancedkit">
-                                        <a href="{{ route('admin.staff.index') }}" class="dropdown-item">Staff</a>
-                                        <a href="advanced-rangeslider.html" class="dropdown-item">Client</a>
-                                        <a href="{{  route('admin.blankPage') }}" class="dropdown-item">Blank Page</a>
+                                        <a href="{{ route('mst_staff.index') }}" class="dropdown-item">Staffs</a>
+                                        <a href="advanced-rangeslider.html" class="dropdown-item">Clients</a>
+                                        <a href="{{ route('work.index') }}" class="dropdown-item">Works</a>
+                                        <a href="{{ route('holiday.index') }}" class="dropdown-item">Holidays</a>
+                                        <a href="{{  route('blankPage') }}" class="dropdown-item">Blank Page</a>
                                     </div>
                                 </li>
                                 {{-- <li class="nav-item dropdown">
@@ -426,38 +437,39 @@
         <!-- Right bar overlay-->
         <div class="rightbar-overlay"></div>
 
-        <!-- JAVASCRIPT -->
-        <script src="assets/libs/jquery/jquery.min.js"></script>
-        <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="assets/libs/metismenu/metisMenu.min.js"></script>
-        <script src="assets/libs/simplebar/simplebar.min.js"></script>
-        <script src="assets/libs/node-waves/waves.min.js"></script>
+                <!-- JAVASCRIPT -->
+        <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/metismenu/metisMenu.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
 
         <!-- Required datatable js -->
-        <script src="assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-        <script src="assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+        <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
 
         <!-- Buttons examples -->
-        <script src="assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-        <script src="assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
-        <script src="assets/libs/jszip/jszip.min.js"></script>
-        <script src="assets/libs/pdfmake/build/pdfmake.min.js"></script>
-        <script src="assets/libs/pdfmake/build/vfs_fonts.js"></script>
-        {{-- <script src="assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
-        <script src="assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
-        <script src="assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
-        <script src="assets/libs/datatables.net-keyTable/js/dataTables.keyTable.min.html"></script>
-        <script src="assets/libs/datatables.net-select/js/dataTables.select.min.js"></script> --}}
-        
+        <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/jszip/jszip.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+        {{-- <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/datatables.net-keyTable/js/dataTables.keyTable.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/datatables.net-select/js/dataTables.select.min.js') }}"></script> --}}
+
         <!-- Responsive examples -->
-        {{-- <script src="assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-        <script src="assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script> --}}
+        {{-- <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script> --}}
 
         <!-- Datatable init js -->
-        {{-- <script src="assets/js/pages/datatables.init.js"></script> --}}
+        {{-- <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script> --}}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-        <script src="assets/js/app.js"></script>
+        <script src="{{ asset('assets/js/app.js') }}"></script>
+
         <script>
             toastr.options = {
                 "closeButton": true,

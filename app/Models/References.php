@@ -5,22 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Staffs extends Model
+class References extends Model
 {
     use HasFactory;
+    public $timestamps = false;
     protected $fillable = [
-        'first_name',
-        'middle_name',
-        'last_name',
-        'mobile_number',
-        'email',
-        'address',
+        'staff_id',
+        'name',
+        'relationship',
+        'mobile',
         'created_by',
         'created_on',
         'updated_by',
         'updated_on',
         'deleted_status'
     ];
-
-    public $timestamps = false;
 }

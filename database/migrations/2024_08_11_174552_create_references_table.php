@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('staffs', function (Blueprint $table) {
+        Schema::create('references', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('middle_name')->nullable(); // Make it nullable if middle name is optional
-            $table->string('last_name');
-            $table->string('mobile_number')->unique();
-            $table->string('email')->unique();
-            $table->text('address')->nullable();
+            $table->unsignedBigInteger('staff_id');
+            $table->string('name');
+            $table->string('relationship');
+            $table->string('mobile');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamp('created_on')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
@@ -35,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('staffs');
+        Schema::dropIfExists('references');
     }
 };

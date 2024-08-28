@@ -1,5 +1,5 @@
-@extends('admin.layout')
-@section('page-title', 'Staffs')
+@extends('layout')
+@section('page-title', 'Works')
 @section('page-content')
 
 <!--  Delete Modal -->
@@ -23,40 +23,24 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h5 class="modal-title text-white" id="myExtraLargeModalLabel">Add / Update Staff</h5>
+                <h5 class="modal-title text-white" id="myExtraLargeModalLabel">Add / Update Work</h5>
                 <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="add_update_form" method="POST">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-4 mb-3">
-                            <label for="first_name" class="form-label">First Name<span class="required-field">*</span></label>
-                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name">
+                            <label for="title" class="form-label">Work Title<span class="required-field">*</span></label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter Work Title">
                         </div>
                         <div class="col-lg-4 mb-3">
-                            <label for="middle_name" class="form-label">Middle Name</label>
-                            <input type="text" class="form-control" id="middle_name" name="middle_name" placeholder="Enter Middle Name">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="last_name" class="form-label">Last Name<span class="required-field">*</span></label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="mobile_number" class="form-label">Mobile Number(Username)<span class="required-field">*</span></label>
-                            <input type="number" class="form-control" id="mobile_number" name="mobile_number" placeholder="Enter Mobile Number">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="email" class="form-label">Email<span class="required-field">*</span></label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            <textarea class="form-control" id="address" name="address" placeholder="Enter Address"></textarea>
+                            <label for="description" class="form-label">Work Description</label>
+                            <textarea class="form-control" id="description" name="description" placeholder="Enter Work Description"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="hidden" id="staff_id" name="staff_id">
+                    <input type="hidden" id="work_id" name="work_id">
                     <input type="submit" class="btn btn-success save_data" value="Save data">
                     <a href="javascript:void(0)" class="btn btn-danger" data-bs-dismiss="modal">Cancel</a>
                 </div>
@@ -67,13 +51,13 @@
 
 <div class="form-head d-flex mb-sm-4 mb-3">
     <div class="me-auto">
-        <h2 class="text-black font-w600">Staffs</h2>
-        <p class="mb-0">View / Add / Update / Delete Staffs </p>
+        <h2 class="text-black font-w600">Works</h2>
+        <p class="mb-0">View / Add / Update / Delete Works </p>
     </div>
     <div>
         <a href="javascript:void(0)" class="btn btn-danger me-2 disabled" id="delete_button" onClick="open_delete_modal()"><i class="bx bx-trash"></i> Delete</a>
-        <a href="#" class="btn btn-primary me-3" id="openModal"><i class='bx bx-plus-circle' ></i> New
-            Staff</a>
+        <a href="javascript:void(0)" class="btn btn-primary me-3" id="openModal"><i class='bx bx-plus-circle' ></i> New
+            Work</a>
     </div>
 </div>
 
@@ -85,10 +69,8 @@
                     <thead>
                         <tr>
                             <th><input class="form-check-input select_checkbox_all" type="checkbox"> &nbsp; Action</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>Mobile Number</th>
+                            <th>Work Title</th>
+                            <th>Work Description</th>
                             <th>Updated On</th>
                         </tr>
                     </thead>
@@ -107,13 +89,11 @@ var delete_selected_id_array = [];
 var table = $('#datatable').DataTable({
     processing: true,
     serverSide: true,
-    ajax: "{{ route('admin.staff.getStaffs') }}",
+    ajax: "{{ route('work.getWorks') }}",
     columns: [
         {data: 'action', name: 'action', orderable: false, searchable: false},
-        {data: 'first_name', name: 'first_name'},
-        {data: 'last_name', name: 'last_name'},
-        {data: 'email', name: 'email'},
-        {data: 'mobile_number', name: 'mobile_number'},
+        {data: 'title', name: 'title'},
+        {data: 'description', name: 'description'},
         {data: 'updated_on', name: 'updated_on'}
     ]
 });
@@ -145,7 +125,7 @@ function validateField(field, message) {
 $('#datatable').on('click', '.edit', function() {
     var id = $(this).data('id');
     clearForm('add_update_form');
-    var url = "{{ route('admin.staff.getStaffDataForEdit', ':id') }}";
+    var url = "{{ route('work.getWork', ':id') }}";
     url = url.replace(':id', id);
 
     $.ajax({
@@ -154,12 +134,9 @@ $('#datatable').on('click', '.edit', function() {
         success: function(response) {
             console.log(response);
             $('#add_update_modal').modal('show');
-            $('#add_update_modal #first_name').val(response.data.first_name);
-            $('#add_update_modal #last_name').val(response.data.last_name);
-            $('#add_update_modal #email').val(response.data.email);
-            $('#add_update_modal #mobile_number').val(response.data.mobile_number);
-            $('#add_update_modal #address').val(response.data.address);
-            $('#add_update_modal #staff_id').val(response.data.id);
+            $('#add_update_modal #title').val(response.data.title);
+            $('#add_update_modal #description').val(response.data.description);
+            $('#add_update_modal #work_id').val(response.data.id);
         },
         error: function(xhr) {
             if (xhr.status === 404) {
@@ -172,11 +149,20 @@ $('#datatable').on('click', '.edit', function() {
     });
 });
 
+
+$('#add_update_form .form-control').on('input', function() {
+    var fieldId = '#' + $(this).attr('id');
+    if ($(this).val()) {
+        $(this).removeClass("is-invalid");
+        $(this).siblings(".invalid-feedback").remove();
+    }
+});
+
 $("#add_update_form").submit(function(event) {
     event.preventDefault();
     const formData = new FormData(this);
     $.ajax({
-        url: "{{ route('admin.staff.saveStaff') }}",
+        url: "{{ route('work.save') }}",
         type: 'POST',
         processData: false,
         contentType: false,
@@ -206,14 +192,6 @@ $("#add_update_form").submit(function(event) {
     
 });
 
-$('#add_update_form .form-control').on('input', function() {
-    var fieldId = '#' + $(this).attr('id');
-    if ($(this).val()) {
-        $(this).addClass("is-valid").removeClass("is-invalid");
-        $(this).siblings(".invalid-feedback").remove();
-    }
-});
-
 function open_delete_modal() {
     $('.delete_modal').modal('show');
     $('.delete_modal_text').empty().text('Are you sure you want to delete the selected records ? This action cannot be undone.');
@@ -222,7 +200,7 @@ function open_delete_modal() {
 
 $(document).on('click', '.delete_records', function () {
     var deleteIds = $('#delete_ids').val();
-    var url = "{{ route('admin.staff.deleteStaff') }}";
+    var url = "{{ route('work.delete') }}";
     $.ajax({
         url: url,
         type: 'POST',
@@ -236,6 +214,7 @@ $(document).on('click', '.delete_records', function () {
             if (response.message) {
                 toastr.success(response.message);
                 $('#datatable').DataTable().ajax.reload(null, false);
+                $('.select_checkbox_all').prop('checked', false);
                 $('.delete_modal').modal('hide');
             } else if (response.error) {
                 toastr.error(response.error);
@@ -272,16 +251,22 @@ $(document).on('click', '.select_checkbox', function () {
         }
     }
     $('.select_checkbox_all').prop('checked', rowCount === delete_selected_id_array.length);
+
 });
 
-$('.select_checkbox_all').on('click', function () {
+$(document).on('click', '.select_checkbox_all', function () {
     var isChecked = $(this).is(':checked');
     var selectedCheckboxes = $('.select_checkbox');
+    if (!isChecked) {
+        delete_selected_id_array = [];
+    }
     selectedCheckboxes.each(function() {
         this.checked = isChecked;
         var id = $(this).data('id');
         if (isChecked) {
-            delete_selected_id_array.push(id);
+            if (!delete_selected_id_array.includes(id)) {
+                delete_selected_id_array.push(id);
+            }
             $(this).parents('tr').css('background-color', '#ffc7c7');
         } else {
             $(this).parents('tr').css('background-color', 'initial');
@@ -289,5 +274,6 @@ $('.select_checkbox_all').on('click', function () {
     });
     $('#delete_button').toggleClass('disabled', !isChecked);
 });
+
 </script>
 @endsection

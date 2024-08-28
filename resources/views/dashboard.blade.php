@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('layout')
 @section('page-title', 'Dashboard')
 @section('page-content')
 <!-- start page title -->

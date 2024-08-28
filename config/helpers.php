@@ -1,22 +1,30 @@
 <?php
 
-use App\Models\Staffs;
+use App\Models\MstStaff;
 use App\Models\User;
 
-if (!function_exists('getUserName')) {
-   function getUserName($userId) {
-       $user = User::find($userId);
-       $userName = '';
-       if ($user) {
+if (!function_exists('getUserInfo')) {
+    function getUserInfo($userId) {
+        $userInfo = [];
+        $user = User::find($userId);
+
+        if ($user) {
             if ($user->staff_id) {
-                $staff = Staffs::find($user->staff_id);
+                $staff = MstStaff::find($user->staff_id);
                 if ($staff) {
-                    $userName = $staff->first_name .' '. $staff->last_name;
+                    $userInfo['user_name'] = $staff->staff_first_name . ' ' . $staff->staff_last_name;
+                    $userInfo['user_photo'] = $staff->staff_photo ?? 'photos/avatar-1.jpg';
                 }
-            }else{
-                $userName = $user->username;
+            } else {
+                $userInfo['user_name'] = $user->username;
+                $userInfo['user_photo'] = 'photos/avatar-1.jpg';
             }
-       }
-       return $userName;
-   }
+        } else {
+            $userInfo['user_name'] = 'Guest';
+            $userInfo['user_photo'] = 'photos/avatar-1.jpg';
+        }
+
+        return $userInfo;
+    }
 }
+
