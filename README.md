@@ -85,3 +85,4 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - use this for call seeder 'php artisan db:seed --class=UsersTableSeeder' only perticular for all 'php artisan db:seed'
 - use 'composer require yajra/laravel-datatables-oracle' for datatable after that use 'php artisan vendor:publish  --provider="Yajra\DataTables\DataTablesServiceProvider"'
 - For helpers >> create function in helper.php then use like this >> <a class="nav-link" href="#">{{ getUserName(session('USER_ID')) }}</a>
+- For this project php artisan make:singular-migration MstRole --model --controller --view

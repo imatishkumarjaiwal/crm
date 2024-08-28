@@ -27,7 +27,11 @@
         <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 
     </head>
-
+    @php
+        $userInfo = getUserInfo(session('USER_ID'));
+        $siteInfo = getSettingInfo();
+    @endphp
+    
     <body data-topbar="dark" data-layout="horizontal">
 
         <!-- Begin page -->
@@ -37,9 +41,15 @@
                 <div class="navbar-header">
                     <div class="d-flex">
                         <!-- LOGO -->
-                        <div class="navbar-brand-box">
-                            <a href="{{ route('dashboard') }}">
-                                <h3 style="color: white;padding-top: 16px;">CRM</h3>
+                        <div class="navbar-brand-box d-flex align-items-center">
+                            <a href="{{ route('dashboard') }}" class="d-flex align-items-center">
+                                @if (isset($siteInfo['site_logo']) && $siteInfo['site_logo'])
+                                    <img src="{{ asset('storage/' . $siteInfo['site_logo']) }}" alt="{{ $siteInfo['site_name'] }}" style="height: 40px; margin-right: 10px;">
+                                    <span style="color: white; font-size: 20px; font-weight: bold;">{{ $siteInfo['site_name'] }}</span>
+                                @else
+                                    <img src="{{ asset('storage/site_files/site_logo.png') }}" alt="CRM" style="height: 40px; margin-right: 10px;">
+                                    <span style="color: white; font-size: 20px; font-weight: bold;">CRM</span>
+                                @endif
                             </a>
                         </div>
 
@@ -61,7 +71,6 @@
                     </div>
 
                     <div class="d-flex">
-
                         <div class="dropdown d-inline-block d-lg-none ms-2">
                             <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -92,10 +101,6 @@
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                @php
-                                    $userInfo = getUserInfo(session('USER_ID'));
-                                @endphp
-
                                 @if (isset($userInfo['user_photo']) && $userInfo['user_photo'])
                                     <img class="rounded-circle header-profile-user" src="{{ asset('storage/' . $userInfo['user_photo']) }}" alt="Header Avatar">
                                     <span class="d-none d-xl-inline-block ms-1">{{ $userInfo['user_name'] }}</span>
@@ -107,8 +112,9 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
-                                <h6 class="dropdown-header">Welcome Peter!</h6>
-                                <a class="dropdown-item" href="#"><i class="mdi mdi-account-circle text-muted font-size-16 align-middle me-1"></i> <span class="align-middle" key="t-profile">Profile</span></a>
+                                <h6 class="dropdown-header">Welcome {{ $userInfo['user_name'] }}</h6>
+                                {{-- <a class="dropdown-item" href="#"><i class="mdi mdi-account-circle text-muted font-size-16 align-middle me-1"></i> <span class="align-middle" key="t-profile">Profile</span></a> --}}
+                                <a class="dropdown-item" href="{{ route('mst_param.index') }}"><i class="mdi mdi-cog-outline text-muted font-size-16 align-middle me-1"></i> <span class="align-middle" key="t-settings">Settings</span></a>
                                 <a class="dropdown-item" href="{{ route('user.logout') }}"><i class="mdi mdi-logout text-muted font-size-16 align-middle me-1"></i> <span class="align-middle" key="t-logout">Logout</span></a>
                             </div>
                         </div>
@@ -134,17 +140,28 @@
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-advancedkit" role="button">
+                                    <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-masters" role="button">
                                         <i class="bx bxs-grid me-2"></i> Masters <div class="arrow-down"></div>
                                     </a>
-                                    <div class="dropdown-menu" aria-labelledby="topnav-advancedkit">
+                                    <div class="dropdown-menu" aria-labelledby="topnav-masters">
                                         <a href="{{ route('mst_staff.index') }}" class="dropdown-item">Staffs</a>
                                         <a href="{{ route('mst_works.index') }}" class="dropdown-item">Works</a>
                                         <a href="{{ route('holiday.index') }}" class="dropdown-item">Holidays</a>
                                         <a href="{{ route('mst_status.index') }}" class="dropdown-item">Status</a>
                                         <a href="{{ route('mst_clients.index') }}" class="dropdown-item">Clients</a>
-
-                                        <a href="{{  route('blankPage') }}" class="dropdown-item">Blank Page</a>
+                                        <a href="{{ route('blankPage') }}" class="dropdown-item">Blank Page</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-transactions" role="button">
+                                        <i class="bx bx-transfer-alt me-2"></i> Transactions <div class="arrow-down"></div>
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="topnav-transactions">
+                                        <a href="#" class="dropdown-item">Jobs</a>
+                                        <a href="#" class="dropdown-item">Reports</a>
+                                        <a href="#" class="dropdown-item">Staff Salary</a>
+                                        <a href="#" class="dropdown-item">Leave & Licence</a>
+                                        <a href="#" class="dropdown-item">Re-assign Work</a>
                                     </div>
                                 </li>
                                 {{-- <li class="nav-item dropdown">
