@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HolidaysController;
+use App\Http\Controllers\MstParamController;
 use App\Http\Controllers\MstStaffController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\MstWorksController;
@@ -27,6 +28,10 @@ Route::middleware('admin')->group(function () {
     Route::controller(UsersController::class)->group(function () {
         Route::get('/dashboard', 'dashboard')->name('dashboard');
         Route::get('/blank-page', 'blankPage')->name('blankPage');
+    });
+    Route::controller(MstParamController::class)->group(function () {
+        Route::get('/mst_param', 'index')->name('mst_param.index');
+        Route::post('/mst_param/update', 'updateParams')->name('mst_param.update');
     });
     Route::controller(MstStaffController::class)->group(function () {
         Route::get('/mst_staffs', 'index')->name('mst_staff.index');
