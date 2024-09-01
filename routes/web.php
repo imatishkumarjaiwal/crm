@@ -7,7 +7,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\MstWorksController;
 use App\Http\Controllers\MstStatusController;
 use App\Http\Controllers\MstClientsController;
-
+use App\Http\Controllers\TrnJobsController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -74,6 +74,16 @@ Route::middleware('admin')->group(function () {
         Route::post('/mst_clients/update', 'updateClients')->name('mst_clients.update');
         Route::get('/get-mst_clients', 'getClients')->name('mst_clients.getClients');
         Route::post('/delete-mst_clients', 'deleteClients')->name('mst_clients.deleteStaff');
+    });
+
+    Route::controller(TrnJobsController::class)->group(function () {
+        Route::get('/trn_jobs', 'index')->name('trn_jobs.index');
+        Route::get('/trn_jobs/add', 'manageJobs')->name('trn_jobs.add');
+        Route::get('/get-trn_jobs', 'getTrnJobRecords')->name('trn_jobs.getTrnJobRecords');
+        Route::post('/trn_jobs/insert', 'insertJob')->name('trn_jobs.insert');
+        Route::get('/trn_jobs/edit/{id}', 'manageJobs')->name('trn_jobs.edit');
+        Route::post('/trn_jobs/update', 'updateJob')->name('trn_jobs.update');
+        Route::post('/delete-trn_jobs', 'deleteJobs')->name('trn_jobs.delete');
     });
 
 });
