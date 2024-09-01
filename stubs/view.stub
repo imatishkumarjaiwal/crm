@@ -1,6 +1,22 @@
 @extends('layout')
 @section('page-title', '{{name}}')
 @section('page-content')
+<!--  Delete Modal -->
+<div class="modal fade delete_modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title text-white delete_modal_text"></h5>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="delete_ids">
+                <a href="javascript:void(0)" class="btn btn-danger delete_records">Yes</a>
+                <a href="javascript:void(0)" class="btn btn-primary" data-bs-dismiss="modal">No</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="form-head d-flex mb-sm-4 mb-3">
     <div class="me-auto">
         <h2 class="text-black font-w600">{{name}} Page</h2>
