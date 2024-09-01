@@ -19,7 +19,7 @@
                     <h4><u>Job Details</u></h4>
                     <div class="row">
                         <div class="col-md-3 mb-3">
-                            <label for="job_date" class="form-label">Date<span class="required-field">*</span></label>
+                            <label for="job_date" class="form-label">Job Date<span class="required-field">*</span></label>
                             <input name="job_date" type="date" placeholder="Date" class="form-control" value="{{ $jobs ? $jobs['job_date'] : date('Y-m-d') }}">
                         </div>
                         <div class="col-md-3 mb-3">
